@@ -1,4 +1,5 @@
 from functions import *
+from tkinter import *
 
 """ These are the classes which are the structures for different objects in the game """
 
@@ -22,8 +23,6 @@ class Actor():
 		new_curh = cur_curh + (new_maxh - cur_maxh)
 		self.stats['health'] = {'maxh': new_maxh, 'curh': new_curh }
 
-		print(self.stats)
-
 """The room class. Rooms will for maps which will be assigned to levels. The rooms will determine the story. """
 
 class Room():
@@ -44,7 +43,7 @@ class Level():
 		self.current_room = current_room
 
 	def start(self):
-		clear()
+		
 		#print(self.intro_text)
 		#print_level()
 		draw_ascii('map.txt')
@@ -53,7 +52,7 @@ class Level():
 		self.level_main()
 
 	def show_room(self, room):
-		clear()
+		
 		print('\n' + room.name.upper() + '\n')
 		print(room.description + '\n')
 
@@ -105,11 +104,14 @@ class Level():
 
 class Game():
 	#constructor called on creation
-	def __init__(self, player, level): 
+	def __init__(self, gui, player, level): 
 		self.running = True
 		self.title = 'The Game'
 		self.game_levels = level
 		self.player = player
+		self.gui = gui
+
+		self.gui.update('stats_txt', player.name + "\n" + str(player.stats['special']))
 
 	#run main loop
 	def run_game(self):
@@ -119,13 +121,13 @@ class Game():
 	#displays the main menu of the game
 	def main_menu(self):
 		#Display
-		clear()
-		draw_anim_ascii('welcome.txt')
-		print('\n \n \n \n')
-		#print(self.title.upper() + '\n')
-		print('Welcome ' + self.player.name)
-		print('Health: ' + str(self.player.stats['health']['curh']) + "/" + str(self.player.stats['health']['maxh']) )
-		print('					 Select:\n\n					  a.New Game\n					  b.Load Game\n					  c.Exit\n\n')
+		
+		self.gui.add('out_console', draw_ascii('welcome.txt'))
+		self.gui.add('out_console', '\n\n\n\n')
+		#self.gui.add('out_console', self.title.upper() + '\n')
+		self.gui.add('out_console', 'Welcome ' + self.player.name)
+		self.gui.add('out_console', 'Health: ' + str(self.player.stats['health']['curh']) + "/" + str(self.player.stats['health']['maxh']) )
+		self.gui.add('out_console', '\t\t\tSelect:\n\n\t\t\ta.New Game\n\t\t\tb.Load Game\n\t\t\tc.Exit\n\n')
 
 		#Take input
 		inp = input('->')
@@ -137,16 +139,16 @@ class Game():
 		elif inp == 'c':
 			quit()
 		else:
-			clear()
-			print('Enter a valid option')
+			
+			self.gui.add('out_console', 'Enter a valid option')
 			time.sleep(1)
 
 	#Start a new game at the level of the new player
 	def new_game_menu(self):
 		global player
 
-		clear()
-		print('Enter new character name:\n ')
+		
+		self.gui.add('out_console', 'Enter new character name:\n ')
 		new_name = input('->')
 
 		self.player.name = new_name
@@ -155,3 +157,67 @@ class Game():
 	#init the level
 	def start_level(self, player):
 		pass
+
+
+class gui():
+	#constructor called on creation
+	def __init__(self): 
+		#TK gui window
+		self.main = Tk ()
+
+		#Backround image
+		image = PhotoImage(file = "bg.png")
+		background_label = Label(self.main, image=image)
+		background_label.place(x=0, y=0, relwidth=1, relheight=1)
+
+		#Input console
+		console = Text(self.main, bg = 'black', fg = 'white', height = 1, insertbackground = 'white')
+		console.insert(END, '->')
+
+		#The map
+		map_label = Label(self.main,text = 'MAP',  bg = '#3a3f2d', fg = 'white', width = 20 )
+
+		#Inventory display console
+		inv_txt = Text(self.main, bg = '#262820',fg = 'white', width = 25, height = 15)
+
+		#Stats display console
+		stats_txt = Text(self.main, bg = '#3a3f2d', fg = 'white', width = 25, height = 10)
+
+		#Output console
+		out_console = Text(self.main, bg = 'black', fg = 'white')
+
+		#Choice console
+		choice_console = Text(self.main, bg = 'black', fg = 'white', height = 10)
+
+		#Display and layout of all components
+		console.grid(row = 4, column = 1, columnspan = 3)
+		map_label.grid(row = 1, column = 1)
+		inv_txt.grid(row = 1, column = 3, rowspan = 2)
+		stats_txt.grid(row = 2, column = 1)
+		out_console.grid(row = 1, column = 2, rowspan = 2)
+		choice_console.grid(row = 3, column = 1, columnspan = 3)
+
+		self.locations = {
+			'background_label' : background_label,
+			'console' : console,
+			'map_label' : map_label,
+			'inv_txt' : inv_txt,
+			'stats_txt' : stats_txt,
+			'out_console' : out_console,
+			'choice_console' : choice_console
+		}
+
+		#The main loop
+		#self.main.mainloop()
+
+	def update(self, location, input):
+		self.locations[location].delete(1.0, END)
+		self.locations[location].insert(END, input)
+
+	def add(self, location, input):
+		self.locations[location].insert(END, input)
+
+	def get(self, location):
+		self.locations[location].get(1.0, END)
+
+

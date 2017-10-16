@@ -4,6 +4,7 @@ import time
 from classes import *
 from functions import *
 
+
 def init():
 	player = Actor()
 	
@@ -26,8 +27,11 @@ def init():
 
 	level_reception = Level(1, 'uni', 'This level is about the uni', rooms['Reception'])
 
-	cur_game = Game(player, level_reception)
+	main_gui = gui()
+
+	cur_game = Game(main_gui, player, level_reception)
 	cur_game.run_game()
 
+	
 
 init()

@@ -4,11 +4,11 @@ import os
 #Displaying ASCII Characters
 
 def draw_ascii(path):
+	out = ""
 	ascii_file = open(path, 'r')
 	for line in ascii_file:
-		new_line = line[:-1]
-		print(new_line)
-
+		out += line[:-1] + "\n"
+	return out
 def draw_anim_ascii(path):
 
 	a_file = open(path, 'r')

@@ -221,3 +221,12 @@ class gui():
 		self.locations[location].get(1.0, END)
 
 
+class Item():
+	def __init__(self, id, name, description):
+		self.id = id
+		self.name = name
+		self.description = description
+
+	def inspect():
+		#Print out name, description and hints in narration section
+		pass

@@ -164,5 +164,4 @@ class Item():
 
 	def inspect():
 		#Print out name, description and hints in narration section
-
-	
+		pass

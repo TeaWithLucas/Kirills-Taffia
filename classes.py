@@ -8,18 +8,18 @@ class Actor():
 		self.name = 'Blank_name'
 		self.inv = []
 		self.stats = {
-			'special': {'s':0, 'p':0, 'e':0, 'c':0, 'i':0, 'a':0, 'l':0}, 
+			#'special': {'s':0, 'p':0, 'e':0, 'c':0, 'i':0, 'a':0, 'l':0},
 			'health': {'curh':0, 'maxh':0},
 			'level': {'exp':0,'lvl':0,'nxt_lvl':0, 'nxt_exp':0}
 		}
 
-		self.stats['special'] = {'s':1, 'p':1, 'e':1, 'c':1, 'i':1, 'a':1, 'l':1}
+		self.stats['special'] = {'strenght':1, 'preception':1, 'endurance':1, 'charisma':1, 'inteligence':1, 'agility':1, 'luck':1}
 		self.calc_stats()
 
 	def calc_stats(self):
 		cur_maxh = self.stats['health']['maxh']
 		cur_curh = self.stats['health']['curh']
-		new_maxh = self.stats['special']['p'] * 8
+		new_maxh = self.stats['special']['preception'] * 8
 		new_curh = cur_curh + (new_maxh - cur_maxh)
 		self.stats['health'] = {'maxh': new_maxh, 'curh': new_curh }
 
@@ -43,7 +43,7 @@ class Level():
 		self.current_room = current_room
 
 	def start(self):
-		
+
 		#print(self.intro_text)
 		#print_level()
 		draw_ascii('map.txt')
@@ -52,7 +52,7 @@ class Level():
 		self.level_main()
 
 	def show_room(self, room):
-		
+
 		print('\n' + room.name.upper() + '\n')
 		print(room.description + '\n')
 
@@ -104,14 +104,27 @@ class Level():
 
 class Game():
 	#constructor called on creation
-	def __init__(self, gui, player, level): 
+	def __init__(self, gui, player, level):
 		self.running = True
 		self.title = 'The Game'
 		self.game_levels = level
 		self.player = player
 		self.gui = gui
+		self.display_stats()
 
-		self.gui.update('stats_txt', player.name + "\n" + str(player.stats['special']))
+	#Displays stats in the stat console
+	def display_stats(self):
+		self.gui.add('stats_txt', '      [STATISTICS]\n\n')
+		for item in self.player.stats['special']:
+			num_spaces = 13 - (len(item) + 2)
+			spaces = ''
+			for a in range(0,num_spaces):
+				spaces += ' '
+
+			self.gui.add('stats_txt', item.upper() + ': '+ spaces + str(self.player.stats['special'][item]) + '\n')
+
+
+		#self.gui.update('stats_txt', player.name + "\n" + str(player.stats['special']))
 
 	#run main loop
 	def run_game(self):
@@ -121,7 +134,7 @@ class Game():
 	#displays the main menu of the game
 	def main_menu(self):
 		#Display
-		
+
 		self.gui.add('out_console', draw_ascii('welcome.txt'))
 		self.gui.add('out_console', '\n\n\n\n')
 		#self.gui.add('out_console', self.title.upper() + '\n')
@@ -139,7 +152,7 @@ class Game():
 		elif inp == 'c':
 			quit()
 		else:
-			
+
 			self.gui.add('out_console', 'Enter a valid option')
 			time.sleep(1)
 
@@ -147,7 +160,7 @@ class Game():
 	def new_game_menu(self):
 		global player
 
-		
+
 		self.gui.add('out_console', 'Enter new character name:\n ')
 		new_name = input('->')
 
@@ -161,14 +174,13 @@ class Game():
 
 class gui():
 	#constructor called on creation
-	def __init__(self): 
+	def __init__(self):
 		#TK gui window
 		self.main = Tk ()
 
-		#Backround image
-		image = PhotoImage(file = "bg.png")
-		background_label = Label(self.main, image=image)
-		background_label.place(x=0, y=0, relwidth=1, relheight=1)
+		#window background
+		#background_label = Label(self.main, bg = '#445b19')
+		f = GradientFrame(self.main)
 
 		#Input console
 		console = Text(self.main, bg = 'black', fg = 'white', height = 1, insertbackground = 'white')
@@ -190,6 +202,7 @@ class gui():
 		choice_console = Text(self.main, bg = 'black', fg = 'white', height = 10)
 
 		#Display and layout of all components
+		f.place(x=0, y=0, relwidth=1, relheight=1)
 		console.grid(row = 4, column = 1, columnspan = 3)
 		map_label.grid(row = 1, column = 1)
 		inv_txt.grid(row = 1, column = 3, rowspan = 2)
@@ -198,7 +211,7 @@ class gui():
 		choice_console.grid(row = 3, column = 1, columnspan = 3)
 
 		self.locations = {
-			'background_label' : background_label,
+			'background_label' : f,
 			'console' : console,
 			'map_label' : map_label,
 			'inv_txt' : inv_txt,
@@ -220,6 +233,34 @@ class gui():
 	def get(self, location):
 		self.locations[location].get(1.0, END)
 
+
+class GradientFrame(Canvas):
+	'''A gradient frame which uses a canvas to draw the background'''
+	def __init__(self, parent, borderwidth=1, relief="sunken"):
+		Canvas.__init__(self, parent, borderwidth=borderwidth, relief=relief)
+		self._color1 = '#152018'
+		self._color2 = '#344e3a'
+		self.bind("<Configure>", self._draw_gradient)
+
+	def _draw_gradient(self, event=None):
+		'''Draw the gradient'''
+		self.delete("gradient")
+		width = self.winfo_width()
+		height = self.winfo_height()
+		limit = width
+		(r1,g1,b1) = self.winfo_rgb(self._color1)
+		(r2,g2,b2) = self.winfo_rgb(self._color2)
+		r_ratio = float(r2-r1) / limit
+		g_ratio = float(g2-g1) / limit
+		b_ratio = float(b2-b1) / limit
+
+		for i in range(limit):
+			nr = int(r1 + (r_ratio * i))
+			ng = int(g1 + (g_ratio * i))
+			nb = int(b1 + (b_ratio * i))
+			color = "#%4.4x%4.4x%4.4x" % (nr,ng,nb)
+			self.create_line(i,0,i,height, tags=("gradient",), fill=color)
+		self.lower("gradient")
 
 class Item():
 	def __init__(self, id, name, description):

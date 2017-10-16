@@ -7,7 +7,7 @@ from functions import *
 def init():
 
 	player = Actor()
-	
+
 	#Create the rooms
 	none = Room('', '', '', '')
 	room_hall = Room('Hall', 'You enter a long hall with various portraits on the walls.', {'north' : 'Reception'}, ['notebook'] )

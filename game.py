@@ -7,8 +7,8 @@ from functions import *
 
 def init():
 	player = Actor()
-	
-	#Create the rooms
+
+	#Create the room
 	none = Room('', '', '', '')
 	room_hall = Room('Hall', 'You enter a long hall with various portraits on the walls.', {'north' : 'Reception'}, ['notebook'] )
 	room_reception = Room('Reception', 'You enter the main reception of the building. The room is empty.', {'south': 'Hall', 'west':'Cafe', 'north': 'Class', 'east':'Office'},[])
@@ -32,6 +32,6 @@ def init():
 	cur_game = Game(main_gui, player, level_reception)
 	cur_game.run_game()
 
-	
+
 
 init()

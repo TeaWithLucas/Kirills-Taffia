@@ -121,7 +121,7 @@ class Game():
 			for a in range(0,num_spaces):
 				spaces += ' '
 
-			self.gui.add('stats_txt', item.upper() + ': '+ spaces + str(self.player.stats['special'][item]) + '\n')
+			self.gui.add('stats_txt',' ' + item.upper() + ': '+ spaces + str(self.player.stats['special'][item]) + '\n')
 
 
 		#self.gui.update('stats_txt', player.name + "\n" + str(player.stats['special']))

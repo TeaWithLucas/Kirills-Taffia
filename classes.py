@@ -1,4 +1,6 @@
-""" THIS IS THE PLAYER CLASS THAT HOLDS A TEMPLATE FOR PLAYER OBJECTS """
+from functions import *
+
+""" These are the classes which are the structures for different objects in the game """
 
 class Player():
 	def __init__(self):
@@ -16,34 +18,15 @@ class Room():
 		self.exits = exits
 		self.items = items
 
-##########################################
-#Create the rooms
-none = Room('', '', '', '')
-room_hall = Room('Hall', 'You enter a long hall with various portraits on the walls.', {'north' : 'Reception'}, ['notebook'] )
-room_reception = Room('Reception', 'You enter the main reception of the building. The room is empty.', {'south': 'Hall', 'west':'Cafe', 'north': 'Class', 'east':'Office'},[])
-room_office = Room('Office', 'You step into a well iluminated office with a paintig of a snowy landscape on the wall.',{'west' : 'Reception'}, ['notebook'] )
-room_cafe = Room('Cafe', 'Before you is a busy cafe. The barista is strugling to keep up with the work load and looks at you desperately as you walk in.', {'east' : 'Reception'}, ['notebook'] )
-room_class = Room('Class', 'You enter an empty class room. On the black board you notice a complicated equation.', {'south' : 'Reception'}, ['notebook'] )
-#room dictionary for navigation
-rooms = {
-	'Reception' : room_reception,
-	'Hall' : room_hall,
-	'Office': room_office,
-	'Cafe': room_cafe,
-	'Class': room_class
-
-
-}
-
 
 """ The level class that is responsible for navigation on the map for that level """
 
 class Level():
-	def __init__(self, id, title):
+	def __init__(self, id, title, intro_text, current_room):
 		self.id = id
 		self.title = title
-		self.intro_text = 'This level is about the uni'
-		self.current_room = room_reception
+		self.intro_text = intro_text
+		self.current_room = current_room
 
 	def start(self):
 		clear()
@@ -105,6 +88,53 @@ class Level():
 
 
 
+class Game():
+	#constructor called on creation
+	def __init__(self, level): 
+		self.running = True
+		self.title = 'The Game'
+		self.game_levels = level
 
-########################################
-level_reception = Level(1, 'uni')
+	#run main loop
+	def run_game(self):
+		while self.running:
+			self.main_menu()
+
+	#displays the main menu of the game
+	def main_menu(self):
+		#Display
+		clear()
+		draw_anim_ascii('welcome.txt')
+		print('\n \n \n \n')
+		#print(self.title.upper() + '\n')
+		print('					 Select:\n\n					  a.New Game\n					  b.Load Game\n					  c.Exit\n\n')
+
+		#Take input
+		inp = input('->')
+		if inp == 'a':
+			new_player = Player()
+			self.new_game_menu(new_player)
+
+		elif inp == 'b':
+			pass
+		elif inp == 'c':
+			quit()
+		else:
+			clear()
+			print('Enter a valid option')
+			time.sleep(1)
+
+	#Start a new game at the level of the new player
+	def new_game_menu(self, player_obj):
+		clear()
+		print('Enter new character name:\n ')
+		new_name = input('->')
+
+		player_obj.name = new_name
+		self.start_level(player_obj.level)
+
+	#init the level
+	def start_level(self, level_id):
+		for level in self.game_levels:
+			if level.id == level_id:
+				level.start()

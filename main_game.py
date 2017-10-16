@@ -1,65 +1,31 @@
 
 """ THIS IS THE MAIN GAME CLASS IT CONTAINS THE MAIN GAME LOOP AND LOGIC ASWELL AS MENU FUNCTIONS"""
-from ASCII import *
-from utilities import clear
 import time
-from player import Player
-from levels import *
+from classes import *
+from functions import *
 
-class Game():
-    #constructor called on creation
-    def __init__(self): 
-        self.running = True
-        self.title = 'The Game'
-        self.game_levels = [level_reception]
+def init():
+	
+	#Create the rooms
+	none = Room('', '', '', '')
+	room_hall = Room('Hall', 'You enter a long hall with various portraits on the walls.', {'north' : 'Reception'}, ['notebook'] )
+	room_reception = Room('Reception', 'You enter the main reception of the building. The room is empty.', {'south': 'Hall', 'west':'Cafe', 'north': 'Class', 'east':'Office'},[])
+	room_office = Room('Office', 'You step into a well iluminated office with a paintig of a snowy landscape on the wall.',{'west' : 'Reception'}, ['notebook'] )
+	room_cafe = Room('Cafe', 'Before you is a busy cafe. The barista is strugling to keep up with the work load and looks at you desperately as you walk in.', {'east' : 'Reception'}, ['notebook'] )
+	room_class = Room('Class', 'You enter an empty class room. On the black board you notice a complicated equation.', {'south' : 'Reception'}, ['notebook'] )
+	#room dictionary for navigation
+	rooms = {
+		'Reception' : room_reception,
+		'Hall' : room_hall,
+		'Office': room_office,
+		'Cafe': room_cafe,
+		'Class': room_class
+	}
 
-    #run main loop
-    def run_game(self):
-        while self.running:
-            self.main_menu()
+	level_reception = Level(1, 'uni', 'This level is about the uni', room_reception)
 
-    #displays the main menu of the game
-    def main_menu(self):
-        #Display
-        clear()
-        draw_anim_ascii('welcome.txt')
-        print('\n \n \n \n')
-        #print(self.title.upper() + '\n')
-        print('                     Select:\n\n                      a.New Game\n                      b.Load Game\n                      c.Exit\n\n')
-
-        #Take input
-        inp = input('->')
-        if inp == 'a':
-            new_player = Player()
-            self.new_game_menu(new_player)
-
-        elif inp == 'b':
-            pass
-        elif inp == 'c':
-            quit()
-        else:
-            clear()
-            print('Enter a valid option')
-            time.sleep(1)
-
-    #Start a new game at the level of the new player
-    def new_game_menu(self, player_obj):
-        clear()
-        print('Enter new character name:\n ')
-        new_name = input('->')
-
-        player_obj.name = new_name
-        self.start_level(player_obj.level)
-
-    #init the level
-    def start_level(self, level_id):
-        for level in self.game_levels:
-            if level.id == level_id:
-                level.start()
+	cur_game = Game(level_reception)
+	cur_game.run_game()
 
 
-
-#######################################
-
-main_game = Game()
-main_game.run_game()
+init()

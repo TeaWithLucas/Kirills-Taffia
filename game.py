@@ -1,6 +1,5 @@
 
 """ THIS IS THE MAIN GAME CLASS IT CONTAINS THE MAIN GAME LOOP AND LOGIC ASWELL AS MENU FUNCTIONS"""
-import time
 from classes import *
 from functions import *
 

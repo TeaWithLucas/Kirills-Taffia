@@ -1,3 +1,4 @@
+import time
 from functions import *
 from tkinter import *
 
@@ -8,18 +9,18 @@ class Actor():
 		self.name = 'Blank_name'
 		self.inv = []
 		self.stats = {
-			'special': {'s':0, 'p':0, 'e':0, 'c':0, 'i':0, 'a':0, 'l':0},
+			'special': {'str':0, 'per':0, 'end':0, 'cha':0, 'int':0, 'agi':0, 'luc':0},
 			'health': {'curh':0, 'maxh':0},
 			'level': {'exp':0,'lvl':0,'nxt_lvl':0, 'nxt_exp':0}
 		}
 
-		self.stats['special'] = {'strenght':1, 'preception':1, 'endurance':1, 'charisma':1, 'inteligence':1, 'agility':1, 'luck':1}
+		self.stats['special'] = {'str':1, 'per':1, 'end':1, 'cha':1, 'int':1, 'agi':1, 'luc':1}
 		self.calc_stats()
 
 	def calc_stats(self):
 		cur_maxh = self.stats['health']['maxh']
 		cur_curh = self.stats['health']['curh']
-		new_maxh = self.stats['special']['preception'] * 8
+		new_maxh = self.stats['special']['str'] * 8
 		new_curh = cur_curh + (new_maxh - cur_maxh)
 		self.stats['health'] = {'maxh': new_maxh, 'curh': new_curh}
 
@@ -48,7 +49,7 @@ class Level():
 		#print_level()
 		draw_ascii('map.txt')
 		#print('\n\n\n\n Press ENTER to continue...')
-		a = input()
+		#a = input()
 		self.level_main()
 
 	def show_room(self, room):
@@ -76,7 +77,7 @@ class Level():
 			#display the options
 			self.display_exits(exits)
 			#get input
-			ans = input()
+			#ans = input()
 			#normalise input
 
 			#validate input
@@ -118,13 +119,13 @@ class Game():
 		player_vitals = self.player.stats['health']
 		player_health_perc = player_vitals['curh']/player_vitals['maxh']
 		self.gui.add('stats_txt', '      [STATISTICS]\n\n')
-		for item in self.player.stats['special']:
-			num_spaces = 13 - (len(item) + 2)
+		for desc, amount in self.player.stats['special'].items():
+			num_spaces = 13 - (len(desc) + 2)
 			spaces = ''
 			for a in range(0,num_spaces):
 				spaces += ' '
 
-			self.gui.add('stats_txt',' ' + item.upper() + ': '+ spaces + str(self.player.stats['special'][item]) + '\n')
+			self.gui.add('stats_txt',' ' + desc.upper() + ': '+ spaces + str(amount) + '\n')
 
 		count_hash = player_health_perc * 10
 		count_dash = 10 - count_hash
@@ -140,9 +141,6 @@ class Game():
 		self.gui.add('stats_txt', '\n\n\n Health:\n')
 		self.gui.add('stats_txt', ' [' + hashes + dashes +']')
 
-
-
-
 		#self.gui.update('stats_txt', player.name + "\n" + str(player.stats['special']))
 
 	def update_inv_display(self):
@@ -153,8 +151,8 @@ class Game():
 
 	#run main loop
 	def run_game(self):
-		while self.running:
-			self.main_menu()
+		#while self.running:
+		self.main_menu()
 
 	#displays the main menu of the game
 	def main_menu(self):
@@ -168,7 +166,8 @@ class Game():
 		self.gui.add('choice_console', 'Select:\n\n\t\t\ta.New Game\n\t\t\tb.Load Game\n\t\t\tc.Exit\n\n')
 
 		#Take input
-		inp = input('->')
+		#inp = input('->')
+		inp = self.gui.get('console')
 		if inp == 'a':
 			self.new_game_menu()
 
@@ -177,9 +176,9 @@ class Game():
 		elif inp == 'c':
 			quit()
 		else:
-
-			self.gui.add('out_console', 'Enter a valid option')
-			time.sleep(1)
+			self.gui.main.mainloop()
+			#self.gui.add('out_console', 'Enter a valid option')
+			#time.sleep(1)
 
 	#Start a new game at the level of the new player
 	def new_game_menu(self):
@@ -235,6 +234,10 @@ class gui():
 		out_console.grid(row = 1, column = 2, rowspan = 2)
 		choice_console.grid(row = 3, column = 1, columnspan = 3)
 
+		def callback(event):
+			print('Pressed Enter')
+
+		console.bind('<Return>', callback)
 		self.locations = {
 			'background_label' : f,
 			'console' : console,

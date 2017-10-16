@@ -7,7 +7,7 @@ class Actor():
 		self.name = 'Blank_name'
 		self.inv = []
 		self.stats = {
-			'special': {'s':0, 'p':0, 'e':0, 'c':0, 'i':0, 'a':0, 'l':0}, 
+			'special': {'s':0, 'p':0, 'e':0, 'c':0, 'i':0, 'a':0, 'l':0},
 			'health': {'curh':0, 'maxh':0},
 			'level': {'exp':0,'lvl':0,'nxt_lvl':0, 'nxt_exp':0}
 		}
@@ -105,7 +105,7 @@ class Level():
 
 class Game():
 	#constructor called on creation
-	def __init__(self, player, level): 
+	def __init__(self, player, level):
 		self.running = True
 		self.title = 'The Game'
 		self.game_levels = level
@@ -155,3 +155,14 @@ class Game():
 	#init the level
 	def start_level(self, player):
 		pass
+
+class Item():
+	def __init__(self, id, name, description):
+		self.id = id
+		self.name = name
+		self.description = description
+
+	def inspect():
+		#Print out name, description and hints in narration section
+
+	

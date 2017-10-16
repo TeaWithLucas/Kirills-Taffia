@@ -6,7 +6,11 @@ from functions import *
 
 
 def init():
+	book_item = Item('Book', 'an old book', 'This is a very old looking book.')
+	gun_item = Item('Gun', 'a shiny gun', 'This is a very reliable weapon.')
 	player = Actor()
+	player.inv.append(book_item)
+	player.inv.append(gun_item)
 
 	#Create the room
 	none = Room('', '', '', '')

@@ -8,7 +8,7 @@ class Actor():
 		self.name = 'Blank_name'
 		self.inv = []
 		self.stats = {
-			#'special': {'s':0, 'p':0, 'e':0, 'c':0, 'i':0, 'a':0, 'l':0},
+			'special': {'s':0, 'p':0, 'e':0, 'c':0, 'i':0, 'a':0, 'l':0},
 			'health': {'curh':0, 'maxh':0},
 			'level': {'exp':0,'lvl':0,'nxt_lvl':0, 'nxt_exp':0}
 		}
@@ -21,7 +21,7 @@ class Actor():
 		cur_curh = self.stats['health']['curh']
 		new_maxh = self.stats['special']['preception'] * 8
 		new_curh = cur_curh + (new_maxh - cur_maxh)
-		self.stats['health'] = {'maxh': new_maxh, 'curh': new_curh }
+		self.stats['health'] = {'maxh': new_maxh, 'curh': new_curh}
 
 """The room class. Rooms will for maps which will be assigned to levels. The rooms will determine the story. """
 
@@ -110,10 +110,13 @@ class Game():
 		self.game_levels = level
 		self.player = player
 		self.gui = gui
-		self.display_stats()
+		self.update_stat_display()
+		self.update_inv_display()
 
 	#Displays stats in the stat console
-	def display_stats(self):
+	def update_stat_display(self):
+		player_vitals = self.player.stats['health']
+		player_health_perc = player_vitals['curh']/player_vitals['maxh']
 		self.gui.add('stats_txt', '      [STATISTICS]\n\n')
 		for item in self.player.stats['special']:
 			num_spaces = 13 - (len(item) + 2)
@@ -123,8 +126,30 @@ class Game():
 
 			self.gui.add('stats_txt',' ' + item.upper() + ': '+ spaces + str(self.player.stats['special'][item]) + '\n')
 
+		count_hash = player_health_perc * 10
+		count_dash = 10 - count_hash
+
+		hashes = ''
+		for i in range(0,int(count_hash)):
+			hashes += '#'
+
+		dashes = ''
+		for i in range(0,int(count_dash)):
+			dashes += '-'
+
+		self.gui.add('stats_txt', '\n\n\n Health:\n')
+		self.gui.add('stats_txt', ' [' + hashes + dashes +']')
+
+
+
 
 		#self.gui.update('stats_txt', player.name + "\n" + str(player.stats['special']))
+
+	def update_inv_display(self):
+		self.gui.add('inv_txt', '      [INVENTORY]\n\n')
+		for item in self.player.inv:
+			self.gui.add('inv_txt', '  ---  ' + item.id + '\n')
+
 
 	#run main loop
 	def run_game(self):
@@ -138,9 +163,9 @@ class Game():
 		self.gui.add('out_console', draw_ascii('welcome.txt'))
 		self.gui.add('out_console', '\n\n\n\n')
 		#self.gui.add('out_console', self.title.upper() + '\n')
-		self.gui.add('out_console', 'Welcome ' + self.player.name)
+		self.gui.add('out_console', 'Welcome ' + self.player.name + '                                                 ')
 		self.gui.add('out_console', 'Health: ' + str(self.player.stats['health']['curh']) + "/" + str(self.player.stats['health']['maxh']) )
-		self.gui.add('out_console', '\t\t\tSelect:\n\n\t\t\ta.New Game\n\t\t\tb.Load Game\n\t\t\tc.Exit\n\n')
+		self.gui.add('choice_console', 'Select:\n\n\t\t\ta.New Game\n\t\t\tb.Load Game\n\t\t\tc.Exit\n\n')
 
 		#Take input
 		inp = input('->')
@@ -193,7 +218,7 @@ class gui():
 		inv_txt = Text(self.main, bg = '#262820',fg = 'white', width = 25, height = 15)
 
 		#Stats display console
-		stats_txt = Text(self.main, bg = '#3a3f2d', fg = 'white', width = 25, height = 10)
+		stats_txt = Text(self.main, bg = '#3a3f2d', fg = 'white', width = 25, height = 15)
 
 		#Output console
 		out_console = Text(self.main, bg = 'black', fg = 'white')

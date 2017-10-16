@@ -2,12 +2,27 @@ from functions import *
 
 """ These are the classes which are the structures for different objects in the game """
 
-class Player():
+class Actor():
 	def __init__(self):
-		self.name = ''
-		self.health = 100
+		self.name = 'Blank_name'
 		self.inv = []
-		self.level = 1
+		self.stats = {
+			'special': {'s':0, 'p':0, 'e':0, 'c':0, 'i':0, 'a':0, 'l':0}, 
+			'health': {'curh':0, 'maxh':0},
+			'level': {'exp':0,'lvl':0,'nxt_lvl':0, 'nxt_exp':0}
+		}
+
+		self.stats['special'] = {'s':1, 'p':1, 'e':1, 'c':1, 'i':1, 'a':1, 'l':1}
+		self.calc_stats()
+
+	def calc_stats(self):
+		cur_maxh = self.stats['health']['maxh']
+		cur_curh = self.stats['health']['curh']
+		new_maxh = self.stats['special']['p'] * 8
+		new_curh = cur_curh + (new_maxh - cur_maxh)
+		self.stats['health'] = {'maxh': new_maxh, 'curh': new_curh }
+
+		print(self.stats)
 
 """The room class. Rooms will for maps which will be assigned to levels. The rooms will determine the story. """
 
@@ -90,10 +105,11 @@ class Level():
 
 class Game():
 	#constructor called on creation
-	def __init__(self, level): 
+	def __init__(self, player, level): 
 		self.running = True
 		self.title = 'The Game'
 		self.game_levels = level
+		self.player = player
 
 	#run main loop
 	def run_game(self):
@@ -107,13 +123,14 @@ class Game():
 		draw_anim_ascii('welcome.txt')
 		print('\n \n \n \n')
 		#print(self.title.upper() + '\n')
+		print('Welcome ' + self.player.name)
+		print('Health: ' + str(self.player.stats['health']['curh']) + "/" + str(self.player.stats['health']['maxh']) )
 		print('					 Select:\n\n					  a.New Game\n					  b.Load Game\n					  c.Exit\n\n')
 
 		#Take input
 		inp = input('->')
 		if inp == 'a':
-			new_player = Player()
-			self.new_game_menu(new_player)
+			self.new_game_menu()
 
 		elif inp == 'b':
 			pass
@@ -125,16 +142,16 @@ class Game():
 			time.sleep(1)
 
 	#Start a new game at the level of the new player
-	def new_game_menu(self, player_obj):
+	def new_game_menu(self):
+		global player
+
 		clear()
 		print('Enter new character name:\n ')
 		new_name = input('->')
 
-		player_obj.name = new_name
-		self.start_level(player_obj.level)
+		self.player.name = new_name
+		self.start_level(self.player)
 
 	#init the level
-	def start_level(self, level_id):
-		for level in self.game_levels:
-			if level.id == level_id:
-				level.start()
+	def start_level(self, player):
+		pass

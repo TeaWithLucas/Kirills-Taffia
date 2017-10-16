@@ -5,6 +5,7 @@ from classes import *
 from functions import *
 
 def init():
+
 	player = Actor()
 	
 	#Create the rooms

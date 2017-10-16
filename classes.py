@@ -235,6 +235,10 @@ class gui():
 		out_console.grid(row = 1, column = 2, rowspan = 2)
 		choice_console.grid(row = 3, column = 1, columnspan = 3)
 
+		def callback(event):
+			print('Pressed Enter')
+
+		console.bind('<Return>', callback)
 		self.locations = {
 			'background_label' : f,
 			'console' : console,

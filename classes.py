@@ -167,7 +167,7 @@ class Game():
 
 		#Take input
 		#inp = input('->')
-		inp = self.gui.get('console')
+		inp = self.gui.get_input()
 		if inp == 'a':
 			self.new_game_menu()
 
@@ -207,7 +207,7 @@ class gui():
 		f = GradientFrame(self.main)
 
 		#Input console
-		console = Text(self.main, bg = 'black', fg = 'white', height = 1, insertbackground = 'white')
+		console = Entry(self.main, bg = 'black', fg = 'white', width = 70, insertbackground = 'white')
 		console.insert(END, '->')
 
 		#The map
@@ -260,6 +260,9 @@ class gui():
 
 	def get(self, location):
 		self.locations[location].get(1.0, END)
+
+	def get_input(self):
+			self.locations['console'].get()
 
 
 class GradientFrame(Canvas):

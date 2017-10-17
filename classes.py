@@ -101,31 +101,64 @@ class Level():
 			#move the player
 			self.current_room = self.move_player(exits, direction)
 
-
-
-class Game():
+class gui():
 	#constructor called on creation
-	def __init__(self, gui, player, level):
+	def __init__(self, player):
+		#TK gui window
+		self.main = Tk ()
+
+		#window background
+		frame = GradientFrame(self.main)
+		frame.place(x=0, y=0, relwidth=1, relheight=1)
+
+		#creating each widget
+		console = Entry(self.main, bg = 'white', fg = 'black', width = 100)
+		map_label = Label(self.main,text = 'MAP',  bg = '#3a3f2d', fg = 'white', width = 20 )
+		inv_txt = Text(self.main, bg = '#262820',fg = 'white', width = 25, height = 15)
+		stats_txt = Text(self.main, bg = '#3a3f2d', fg = 'white', width = 25, height = 15)
+		out_console = Text(self.main, bg = 'black', fg = 'white', width = 100)
+		choice_console = Text(self.main, bg = 'black', fg = 'white', width = 100, height = 10)
+
+		#Display and layout of all widgets
+		console.grid(row = 4, column = 1, columnspan = 3)
+		map_label.grid(row = 1, column = 1)
+		inv_txt.grid(row = 1, column = 3, rowspan = 2)
+		stats_txt.grid(row = 2, column = 1)
+		out_console.grid(row = 1, column = 2, rowspan = 2)
+		choice_console.grid(row = 3, column = 1, columnspan = 3)
+
+		self.locations = {
+			'frame' : frame,
+			'console' : console,
+			'map_label' : map_label,
+			'inv_txt' : inv_txt,
+			'stats_txt' : stats_txt,
+			'out_console' : out_console,
+			'choice_console' : choice_console
+		}
+
 		self.running = True
 		self.title = 'The Game'
-		self.game_levels = level
 		self.player = player
-		self.gui = gui
-		self.update_stat_display()
-		self.update_inv_display()
+		self.user_input = ""
+		self.curent_stage = "main_menu"
 
-	#Displays stats in the stat console
+		#Start
+		self.navigate()
+
 	def update_stat_display(self):
+
+		update_txt = ""
 		player_vitals = self.player.stats['health']
 		player_health_perc = player_vitals['curh']/player_vitals['maxh']
-		self.gui.add('stats_txt', '      [STATISTICS]\n\n')
+		update_txt += '\t[STATISTICS]\n\n'
 		for desc, amount in self.player.stats['special'].items():
 			num_spaces = 13 - (len(desc) + 2)
 			spaces = ''
 			for a in range(0,num_spaces):
 				spaces += ' '
 
-			self.gui.add('stats_txt',' ' + desc.upper() + ': '+ spaces + str(amount) + '\n')
+			update_txt += ' ' + desc.upper() + ': '+ spaces + str(amount) + '\n'
 
 		count_hash = player_health_perc * 10
 		count_dash = 10 - count_hash
@@ -138,131 +171,89 @@ class Game():
 		for i in range(0,int(count_dash)):
 			dashes += '-'
 
-		self.gui.add('stats_txt', '\n\n\n Health:\n')
-		self.gui.add('stats_txt', ' [' + hashes + dashes +']')
+		update_txt += '\n\n\n Health:\n'
+		update_txt += ' [' + hashes + dashes +']'
 
-		#self.gui.update('stats_txt', player.name + "\n" + str(player.stats['special']))
+		self.update_txt('stats_txt', update_txt)
+
+		#self.update_txt(player.name + "\n" + str(player.stats['special']))
 
 	def update_inv_display(self):
-		self.gui.add('inv_txt', '      [INVENTORY]\n\n')
+		update_txt = ""
+		update_txt += '      [INVENTORY]\n\n'
 		for item in self.player.inv:
-			self.gui.add('inv_txt', '  ---  ' + item.id + '\n')
+			update_txt += '  ---  ' + item.id + '\n'
+		self.update_txt('inv_txt', update_txt)
 
-
-	#run main loop
-	def run_game(self):
-		#while self.running:
-		self.main_menu()
+	def refresh(self):
+		self.update_stat_display()
+		self.update_inv_display()
+		self.update_txt('out_console', "")
+		self.update_txt('choice_console', "")
 
 	#displays the main menu of the game
 	def main_menu(self):
 		#Display
+		self.curent_stage = "main_menu"
 
-		self.gui.add('out_console', draw_ascii('welcome.txt'))
-		self.gui.add('out_console', '\n\n\n\n')
-		#self.gui.add('out_console', self.title.upper() + '\n')
-		self.gui.add('out_console', 'Welcome ' + self.player.name + '                                                 ')
-		self.gui.add('out_console', 'Health: ' + str(self.player.stats['health']['curh']) + "/" + str(self.player.stats['health']['maxh']) )
-		self.gui.add('choice_console', 'Select:\n\n\t\t\ta.New Game\n\t\t\tb.Load Game\n\t\t\tc.Exit\n\n')
+		normalised_input = self.user_input
+		self.user_input = ""
 
-		#Take input
-		#inp = input('->')
-		inp = self.gui.get_input()
-		if inp == 'a':
-			self.new_game_menu()
-
-		elif inp == 'b':
+		if normalised_input == 'a':
+			self.add_txt('choice_console', "Correct, You said: " + normalised_input + "\n")
+		elif normalised_input== 'b':
+			self.add_txt('choice_console', "Correct, You said: " + normalised_input + "\n")
+		elif normalised_input == 'c':
+			self.add_txt('choice_console', "Correct, You said: " + normalised_input + "\n")
+		elif normalised_input == '':
 			pass
-		elif inp == 'c':
-			quit()
 		else:
-			self.gui.main.mainloop()
-			#self.gui.add('out_console', 'Enter a valid option')
-			#time.sleep(1)
+			self.update_txt('choice_console', "Invalid, You said: " + normalised_input + "\n")
 
-	#Start a new game at the level of the new player
-	def new_game_menu(self):
-		global player
+		
+		out_console = ""
+		choice_console = ""
+		out_console += draw_ascii('welcome.txt') + '\n'
+		out_console += '\n\n\n\n'
+		#out_console += self.title.upper() + '\n'
+		out_console += 'Welcome ' + self.player.name + '\t\t\t\t\t\t\t'
+		choice_console += 'Select:\n\n\t\t\ta.New Game\n\t\t\tb.Load Game\n\t\t\tc.Exit'
 
+		self.add_txt('out_console', out_console)
+		self.add_txt('choice_console', choice_console)
+		
 
-		self.gui.add('out_console', 'Enter new character name:\n ')
-		new_name = input('->')
+		time.sleep(1)
+		self.locations['console'].bind('<Return>', self.callback)
 
-		self.player.name = new_name
-		self.start_level(self.player)
+	def callback(self, event):
+		print("Enter Key")
+		self.user_input = self.get_input()
+		self.navigate()
 
-	#init the level
-	def start_level(self, player):
-		pass
+	def navigate(self):
+		self.refresh()
+		if self.curent_stage == "main_menu":
+			self.main_menu()
+		elif self.curent_stage == "other":
+			pass
+		else:
+			self.main_menu()
 
-
-class gui():
-	#constructor called on creation
-	def __init__(self):
-		#TK gui window
-		self.main = Tk ()
-
-		#window background
-		#background_label = Label(self.main, bg = '#445b19')
-		f = GradientFrame(self.main)
-
-		#Input console
-		console = Entry(self.main, bg = 'black', fg = 'white', width = 70, insertbackground = 'white')
-		console.insert(END, '->')
-
-		#The map
-		map_label = Label(self.main,text = 'MAP',  bg = '#3a3f2d', fg = 'white', width = 20 )
-
-		#Inventory display console
-		inv_txt = Text(self.main, bg = '#262820',fg = 'white', width = 25, height = 15)
-
-		#Stats display console
-		stats_txt = Text(self.main, bg = '#3a3f2d', fg = 'white', width = 25, height = 15)
-
-		#Output console
-		out_console = Text(self.main, bg = 'black', fg = 'white')
-
-		#Choice console
-		choice_console = Text(self.main, bg = 'black', fg = 'white', height = 10)
-
-		#Display and layout of all components
-		f.place(x=0, y=0, relwidth=1, relheight=1)
-		console.grid(row = 4, column = 1, columnspan = 3)
-		map_label.grid(row = 1, column = 1)
-		inv_txt.grid(row = 1, column = 3, rowspan = 2)
-		stats_txt.grid(row = 2, column = 1)
-		out_console.grid(row = 1, column = 2, rowspan = 2)
-		choice_console.grid(row = 3, column = 1, columnspan = 3)
-
-		def callback(event):
-			print('Pressed Enter')
-
-		console.bind('<Return>', callback)
-		self.locations = {
-			'background_label' : f,
-			'console' : console,
-			'map_label' : map_label,
-			'inv_txt' : inv_txt,
-			'stats_txt' : stats_txt,
-			'out_console' : out_console,
-			'choice_console' : choice_console
-		}
-
-		#The main loop
-		#self.main.mainloop()
-
-	def update(self, location, input):
+	def update_txt(self, location, input):
 		self.locations[location].delete(1.0, END)
 		self.locations[location].insert(END, input)
 
-	def add(self, location, input):
+	def add_txt(self, location, input):
 		self.locations[location].insert(END, input)
 
-	def get(self, location):
-		self.locations[location].get(1.0, END)
+	def get_txt(self, location):
+		return self.locations[location].get(1.0, END)
 
 	def get_input(self):
-			self.locations['console'].get()
+		return self.locations['console'].get()
+			
+
 
 
 class GradientFrame(Canvas):

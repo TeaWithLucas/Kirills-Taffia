@@ -4,12 +4,16 @@ from classes import *
 from functions import *
 
 
+
 def init():
+
 	book_item = Item('Book', 'an old book', 'This is a very old looking book.')
 	gun_item = Item('Gun', 'a shiny gun', 'This is a very reliable weapon.')
 	player = Actor()
 	player.inv.append(book_item)
 	player.inv.append(gun_item)
+
+	user_input = ""
 
 	#Create the room
 	none = Room('', '', '', '')
@@ -30,10 +34,9 @@ def init():
 
 	level_reception = Level(1, 'uni', 'This level is about the uni', rooms['Reception'])
 
-	main_gui = gui()
+	window = gui(player)
 
-	cur_game = Game(main_gui, player, level_reception)
-	cur_game.run_game()
+	window.main.mainloop()
 
 
 

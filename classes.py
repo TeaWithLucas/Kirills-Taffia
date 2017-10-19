@@ -33,6 +33,9 @@ class Room():
 		self.exits = exits
 		self.items = items
 
+class Stage():
+	def __init__(self, name):
+		self.name = name
 
 """ The level class that is responsible for navigation on the map for that level """
 
@@ -99,160 +102,7 @@ class Level():
 			#Let player select exit
 			direction = self.exit_selection(exits)
 			#move the player
-			self.current_room = self.move_player(exits, direction)
-
-class gui():
-	#constructor called on creation
-	def __init__(self, player):
-		#TK gui window
-		self.main = Tk ()
-
-		#window background
-		frame = GradientFrame(self.main)
-		frame.place(x=0, y=0, relwidth=1, relheight=1)
-
-		#creating each widget
-		console = Entry(self.main, bg = 'white', fg = 'black', width = 100)
-		map_label = Label(self.main,text = 'MAP',  bg = '#3a3f2d', fg = 'white', width = 20 )
-		inv_txt = Text(self.main, bg = '#262820',fg = 'white', width = 25, height = 15)
-		stats_txt = Text(self.main, bg = '#3a3f2d', fg = 'white', width = 25, height = 15)
-		out_console = Text(self.main, bg = 'black', fg = 'white', width = 100)
-		choice_console = Text(self.main, bg = 'black', fg = 'white', width = 100, height = 10)
-
-		#Display and layout of all widgets
-		console.grid(row = 4, column = 1, columnspan = 3)
-		map_label.grid(row = 1, column = 1)
-		inv_txt.grid(row = 1, column = 3, rowspan = 2)
-		stats_txt.grid(row = 2, column = 1)
-		out_console.grid(row = 1, column = 2, rowspan = 2)
-		choice_console.grid(row = 3, column = 1, columnspan = 3)
-
-		self.locations = {
-			'frame' : frame,
-			'console' : console,
-			'map_label' : map_label,
-			'inv_txt' : inv_txt,
-			'stats_txt' : stats_txt,
-			'out_console' : out_console,
-			'choice_console' : choice_console
-		}
-
-		self.running = True
-		self.title = 'The Game'
-		self.player = player
-		self.user_input = ""
-		self.curent_stage = "main_menu"
-
-		#Start
-		self.navigate()
-
-	def update_stat_display(self):
-
-		update_txt = ""
-		player_vitals = self.player.stats['health']
-		player_health_perc = player_vitals['curh']/player_vitals['maxh']
-		update_txt += '\t[STATISTICS]\n\n'
-		for desc, amount in self.player.stats['special'].items():
-			num_spaces = 13 - (len(desc) + 2)
-			spaces = ''
-			for a in range(0,num_spaces):
-				spaces += ' '
-
-			update_txt += ' ' + desc.upper() + ': '+ spaces + str(amount) + '\n'
-
-		count_hash = player_health_perc * 10
-		count_dash = 10 - count_hash
-
-		hashes = ''
-		for i in range(0,int(count_hash)):
-			hashes += '#'
-
-		dashes = ''
-		for i in range(0,int(count_dash)):
-			dashes += '-'
-
-		update_txt += '\n\n\n Health:\n'
-		update_txt += ' [' + hashes + dashes +']'
-
-		self.update_txt('stats_txt', update_txt)
-
-		#self.update_txt(player.name + "\n" + str(player.stats['special']))
-
-	def update_inv_display(self):
-		update_txt = ""
-		update_txt += '      [INVENTORY]\n\n'
-		for item in self.player.inv:
-			update_txt += '  ---  ' + item.id + '\n'
-		self.update_txt('inv_txt', update_txt)
-
-	def refresh(self):
-		self.update_stat_display()
-		self.update_inv_display()
-		self.update_txt('out_console', "")
-		self.update_txt('choice_console', "")
-
-	#displays the main menu of the game
-	def main_menu(self):
-		#Display
-		self.curent_stage = "main_menu"
-
-		normalised_input = self.user_input
-		self.user_input = ""
-
-		if normalised_input == 'a':
-			self.add_txt('choice_console', "Correct, You said: " + normalised_input + "\n")
-		elif normalised_input== 'b':
-			self.add_txt('choice_console', "Correct, You said: " + normalised_input + "\n")
-		elif normalised_input == 'c':
-			self.add_txt('choice_console', "Correct, You said: " + normalised_input + "\n")
-		elif normalised_input == '':
-			pass
-		else:
-			self.update_txt('choice_console', "Invalid, You said: " + normalised_input + "\n")
-
-		
-		out_console = ""
-		choice_console = ""
-		out_console += draw_ascii('welcome.txt') + '\n'
-		out_console += '\n\n\n\n'
-		#out_console += self.title.upper() + '\n'
-		out_console += 'Welcome ' + self.player.name + '\t\t\t\t\t\t\t'
-		choice_console += 'Select:\n\n\t\t\ta.New Game\n\t\t\tb.Load Game\n\t\t\tc.Exit'
-
-		self.add_txt('out_console', out_console)
-		self.add_txt('choice_console', choice_console)
-		
-
-		time.sleep(1)
-		self.locations['console'].bind('<Return>', self.callback)
-
-	def callback(self, event):
-		print("Enter Key")
-		self.user_input = self.get_input()
-		self.navigate()
-
-	def navigate(self):
-		self.refresh()
-		if self.curent_stage == "main_menu":
-			self.main_menu()
-		elif self.curent_stage == "other":
-			pass
-		else:
-			self.main_menu()
-
-	def update_txt(self, location, input):
-		self.locations[location].delete(1.0, END)
-		self.locations[location].insert(END, input)
-
-	def add_txt(self, location, input):
-		self.locations[location].insert(END, input)
-
-	def get_txt(self, location):
-		return self.locations[location].get(1.0, END)
-
-	def get_input(self):
-		return self.locations['console'].get()
-			
+			self.current_room = self.move_player(exits, direction)		
 
 
 

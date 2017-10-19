@@ -7,6 +7,7 @@ player = Actor()
 player.inv.append(book_item)
 player.inv.append(gun_item)
 
+
 #Create the room
 none = Room('', '', '', '')
 room_hall = Room('Hall', 'You enter a long hall with various portraits on the walls.', {'north' : 'Reception'}, ['notebook'] )

@@ -25,7 +25,7 @@ class gui():
 
 		#window background
 		frame = Label(main, image = bg_image)
-		frame.place(x=0, y=0, relwidth=1, relheight=1)
+
 
 		#creating each widget
 		console_widget = Entry(main, bg = '#6a8c87', fg = 'white', width = 100)
@@ -40,6 +40,7 @@ class gui():
 		map_widget.image = map_sprite
 
 		#Display and layout of all widgets
+		frame.place(x=0, y=0, relwidth=1, relheight=1)
 		console_widget.grid(row = 4, column = 1, columnspan = 3)
 		map_widget.grid(row = 1, column = 1)
 		inv_widget.grid(row = 1, column = 3, rowspan = 2)
@@ -47,6 +48,7 @@ class gui():
 		hp_widget.place(x=0, y=0, relwidth =1, relheight = 0.1)
 		narration_widget.grid(row = 1, column = 2, rowspan = 2)
 		choice_widget.grid(row = 3, column = 1, columnspan = 3)
+		
 
 		inv_widget.config(state = DISABLED)
 		choice_widget.config(state = DISABLED)

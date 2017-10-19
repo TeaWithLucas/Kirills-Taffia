@@ -3,6 +3,7 @@ import os
 
 #Displaying ASCII Characters
 
+
 def draw_ascii(path):
 	out = ""
 	ascii_file = open(path, 'r')

@@ -6,9 +6,9 @@ from tkinter import *
 
 
 class Actor():
-	def __init__(self):
-		self.name = 'Blank_name'
-		self.inv = []
+	def __init__(self, inv, name='Blank_name'):
+		self.name = name
+		self.inv = inv
 		self.stats = {
 			'special': {'str':0, 'per':0, 'end':0, 'cha':0, 'int':0, 'agi':0, 'luc':0},
 			'health': {'curh':0, 'maxh':0},
@@ -35,8 +35,11 @@ class Room():
 		self.items = items
 
 class Stage():
-	def __init__(self, name):
+	def __init__(self, stage_id, name, narration, choices):
+		self.stage_id = stage_id
 		self.name = name
+		self.narration = narration
+		self.choices = choices
 
 """ The level class that is responsible for navigation on the map for that level """
 

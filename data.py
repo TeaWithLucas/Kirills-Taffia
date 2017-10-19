@@ -3,9 +3,8 @@ from functions import *
 
 book_item = Item('Book', 'an old book', 'This is a very old looking book.')
 gun_item = Item('Gun', 'a shiny gun', 'This is a very reliable weapon.')
-player = Actor()
-player.inv.append(book_item)
-player.inv.append(gun_item)
+
+inventory = [book_item, gun_item]
 
 
 #Create the room
@@ -27,11 +26,12 @@ rooms = {
 
 level_reception = Level(1, 'uni', 'This level is about the uni', rooms['Reception'])
 
-stg_start = Stage('start')
-stg_main_menu = Stage('main menu')
-stg_other_menu = Stage('other menu')
-stg_new_game = Stage('new game')
-stg_load_game = Stage('load game')
-stg_exit = Stage('exit')
+stg_start = Stage('start', 'Main Menu', [draw_ascii('welcome.txt') + '\n\n\n\n\n' + 'Welcome  Krill'],  ['Start', 'Exit'])
+stg_act1 = Stage('act1', 'Act1', ['Welcome  Krill', 'where is my cat', 'Welcome  Krill', 'where is my cat', 'Welcome  Krill', 'where is my cat'],  ['Attack', 'Attack'])
+stg_main_menu = Stage('main menu', 'main menu', ['Welcome  Krill'], ['Start', 'Exit'])
+stg_other_menu = Stage('other menu', 'other menu', ['Welcome  Krill'],  ['Start', 'Exit'])
+stg_new_game = Stage('new game', 'new game', ['Welcome  Krill'],  ['Start', 'Exit'])
+stg_load_game = Stage('load game', 'load game', ['Welcome  Krill'],  ['Start', 'Exit'])
+stg_exit = Stage('exit', 'Exiting', ['Welcome  Krill'],  ['Start', 'Exit'])
 
 stages = [stg_start, stg_main_menu, stg_other_menu, stg_new_game, stg_load_game, stg_exit]

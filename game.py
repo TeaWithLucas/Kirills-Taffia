@@ -8,8 +8,10 @@ from tkinter import *
 class gui():
 	#constructor called on creation
 	def __init__(self, player, title = 'the game'):
+
+		print('initialisng gui')
 		self.running = True
-		self.title = 'The Game'
+		self.title = title
 		self.player = player
 		self.user_input = ""
 		self.current_stage = stg_start
@@ -18,7 +20,7 @@ class gui():
 		self.main = Tk ()
 		main = self.main
 		main.resizable(width = False, height = False)
-		main.title('Taffi Warz')
+		main.title(self.title)
 
 		bg_image = PhotoImage(file = "bg3.png")
 		map_sprite = PhotoImage(file = "map.png")
@@ -75,41 +77,94 @@ class gui():
 		#Start
 		self.navigate()
 
+	def navigate(self):
+		self.refresh()
+		print('navigating')
+		stage = self.current_stage
+		user_input = self.user_input
+
+		if user_input == "":
+			self.set_title(stage.name)
+			self.update_txt('narration', stage.narration[0])
+			self.update_txt('choice', "[Scene]")
+			if len(stage.narration) > 1:
+				self.remaining_narration = stage.narration[1:]
+				self.main.after(1000, self.narrate)
+			else:
+				self.update_choices()
+		else:
+			print('user_input - ' + user_input)
+			self.user_input = ""
+			if user_input == 'start':
+				self.current_stage = stg_act1
+			elif user_input== 'load game':
+				self.current_stage = stg_load_game
+			elif user_input == 'exit':
+				self.current_stage = stg_exit
+			elif user_input == '':
+				pass
+			else:
+				self.update_txt('choice', "Invalid, You said: " + user_input + "\n")
+				if not(stage):
+					print("Error - Stage not set")
+					#self.main_menu()
+				elif stage == stg_start:
+					#self.main_menu()
+					pass
+				elif stage == stg_main_menu:
+					#self.main_menu()
+					pass
+				elif stage == stg_other_menu:
+					pass
+				elif stage == stg_new_game:
+					#self.new_game()
+					pass
+				elif stage == stg_load_game:
+					pass
+					#self.load_game()
+				elif stage == stg_exit:
+					pass
+					#self.exit()
+				else:
+					print("Error - Stage not defined: " + str(stage))
+					#self.main_menu()
+			self.navigate()
+
+	#Event driven fuctions
 	def rtn_pressed(self, event):
 		print("Input - Enter Key")
 		self.user_input = self.get_input()
 		user_input = self.user_input
 		if user_input == 'back':
 			#return to main menu
+			print('going back')
 			self.current_stage = stg_main_menu
 		elif user_input == 'attack':
 			#TESTING HP BAR
-			self.player.stats['health']['curh'] -= 1
+			amount = 1
+			print('testing taking ' + str(amount) + ' hp')
+			self.player.stats['health']['curh'] -= amount
 			self.update_hp_bar()
 
 		self.navigate()
 
-	def navigate(self):
-		self.refresh()
-		stage = self.current_stage
-		if not(stage):
-			print("Error - Stage not set")
-			self.main_menu()
-		elif stage == stg_start:
-			self.main_menu()
-		elif stage == stg_main_menu:
-			self.main_menu()
-		elif stage == stg_other_menu:
-			pass
-		elif stage == stg_new_game:
-			self.new_game()
-		elif stage == stg_load_game:
-			self.load_game()
-		elif stage == stg_exit:
-			self.exit()
+	def narrate(self):
+		narration = self.remaining_narration
+		print(narration[0])
+		self.update_txt('narration', narration[0])
+		if len(narration) > 1:
+			self.remaining_narration = narration[1:]
+			self.main.after(1000, self.narrate)
 		else:
-			print("Error - Stage not defined: " + stage)
-			self.main_menu()
+			self.update_choices()
+
+
+	def update_clock(self):
+		now = time.strftime("%H:%M:%S")
+		self.label.configure(text=now)
+		self.main.after(1000, self.update_clock)
+
+	#Update GUI widgets
 
 	def update_txt(self, location, input):
 		self.locations[location].config(state = NORMAL)
@@ -131,6 +186,12 @@ class gui():
 		self.locations['console'].delete(0, END)
 		return norm_input
 
+	def set_title(self, subtitle = ""):
+		if subtitle != "":
+			self.main.title(self.title + " - " + subtitle)
+		else:
+			self.main.title(self.title)
+
 	def update_stat_display(self):
 
 		update_txt = ""
@@ -142,7 +203,7 @@ class gui():
 				spaces += ' '
 
 			update_txt += ' ' + desc.upper() + ': '+ spaces + str(amount) + '\n'
-
+		print ('updating stats:' + str(self.player.stats['special']))
 		self.update_txt('stats', update_txt)
 
 		#self.update_txt(player.name + "\n" + str(player.stats['special']))
@@ -160,7 +221,7 @@ class gui():
 		none_sym_num=int(player_vitals['maxh']-player_vitals['curh'])
 
 		symbols = full_sym_num * full_sym + half_sym_num * half_sym + none_sym_num * none_sym
-		print (symbols)
+		print ('updating health, cur hp: ' + str(player_vitals['curh']) + ', max hp: ' + str(player_vitals['curh']) + ', symbols: '+ symbols)
 		self.update_txt('hp', symbols)
 
 	def update_inv_display(self):
@@ -170,12 +231,17 @@ class gui():
 			update_txt += '  ---  ' + item.id + '\n'
 		self.update_txt('inv', update_txt)
 
+	def update_choices(self):
+		for choice in self.current_stage.choices:
+			self.add_txt('choice', "\t\t\t\t" + choice + "\n")
+
 	def refresh(self):
+		print('refreshing and clearing windows')
 		self.update_stat_display()
 		self.update_inv_display()
 		self.update_hp_bar()
-		self.update_txt('narration', "")
-		self.update_txt('choice', "")
+		#self.update_txt('narration', "")
+		#self.update_txt('choice', "")
 
 	#displays the main menu of the game
 	def main_menu(self):
@@ -185,16 +251,8 @@ class gui():
 		user_input = self.user_input
 
 		if user_input == "":
-			narration_out = ""
-			choice_out = ""
-			narration_out += draw_ascii('welcome.txt') + '\n'
-			narration_out += '\n\n\n\n'
-			#narration_out += self.title.upper() + '\n'
-			narration_out += 'Welcome ' + self.player.name + '\t\t\t\t\t\t\t'
-			choice_out += 'Select:\n\n\t\t\ta.New Game\n\t\t\tb.Load Game\n\t\t\tc.Exit'
-
-			self.add_txt('narration', narration_out)
-			self.add_txt('choice', choice_out)
+			self.update_txt('narration', narration_out)
+			self.update_txt('choice', choice_out)
 			time.sleep(1)
 		else:
 			print('user_input - ' + user_input)
@@ -211,21 +269,13 @@ class gui():
 				self.update_txt('choice', "Invalid, You said: " + user_input + "\n")
 			self.navigate()
 
-	def load_game(self):
-		self.update_txt('narration', 'Load game menu')
-		self.update_txt('choice', 'Updated')
-
-
-	def new_game(self):
-		self.update_txt('narration', 'New game')
-		self.update_txt('choice', 'Updated')
-
 	def exit(self):
 		self.update_txt('narration', 'New game')
 		print("exiting")
 		quit()
 
 def init():
+	player = Actor(inventory, 'Kirill')
 	window = gui(player, 'Taffi Warz')
 	window.main.mainloop()
 

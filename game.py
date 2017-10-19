@@ -3,6 +3,7 @@
 from classes import *
 from functions import *
 from data import *
+from tkinter import *
 
 class gui():
 	#constructor called on creation
@@ -34,6 +35,9 @@ class gui():
 		hp_widget = Text(stat_widget, bg = 'black', fg = 'red')
 		narration_widget = Text(main, bg = 'black', fg = 'yellow', width = 100)
 		choice_widget = Text(main, bg = 'black', fg = 'yellow', width = 100, height = 10)
+
+		frame.image = bg_image
+		map_widget.image = map_sprite
 
 		#Display and layout of all widgets
 		console_widget.grid(row = 4, column = 1, columnspan = 3)
@@ -76,11 +80,9 @@ class gui():
 		if user_input == 'back':
 			#return to main menu
 			self.current_stage = main_menu
-			self.clear_input_console()
 		elif user_input == 'attack':
 			#TESTING HP BAR
 			self.player.stats['health']['curh'] -= 1
-			self.clear_input_console()
 			self.update_hp_bar()
 
 		self.navigate()
@@ -150,15 +152,15 @@ class gui():
 
 		full_sym = '♥'
 		half_sym = '💛'
-		none_sym = '♡'
+		none_sym = 'x'
 
-		full_sym_num=int(player_vitals['curh']/4)
-		half_sym_num=int((full_sym_num*4 - player_vitals['curh'])/2)
-		none_sym_num=int(player_vitals['maxh']-player_vitals['curh']/2)
+		full_sym_num=int(player_vitals['curh']/2)
+		half_sym_num=int((full_sym_num*2 - player_vitals['curh']))
+		none_sym_num=int(player_vitals['maxh']-player_vitals['curh'])
 
 		symbols = full_sym_num * full_sym + half_sym_num * half_sym + none_sym_num * none_sym
 		print (symbols)
-		update_text('hp', symbols)
+		self.update_txt('hp', symbols)
 
 	def update_inv_display(self):
 		update_txt = ""
@@ -170,6 +172,7 @@ class gui():
 	def refresh(self):
 		self.update_stat_display()
 		self.update_inv_display()
+		self.update_hp_bar()
 		self.update_txt('narration', "")
 		self.update_txt('choice', "")
 

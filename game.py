@@ -79,7 +79,7 @@ class gui():
 		user_input = self.user_input
 		if user_input == 'back':
 			#return to main menu
-			self.current_stage = main_menu
+			self.current_stage = stg_main_menu
 		elif user_input == 'attack':
 			#TESTING HP BAR
 			self.player.stats['health']['curh'] -= 1
@@ -100,11 +100,11 @@ class gui():
 		elif stage == stg_other_menu:
 			pass
 		elif stage == stg_new_game:
-			self.main_menu()
+			self.new_game()
 		elif stage == stg_load_game:
-			self.main_menu()
+			self.load_game()
 		elif stage == stg_exit:
-			self.main_menu()
+			self.exit()
 		else:
 			print("Error - Stage not defined: " + stage)
 			self.main_menu()
@@ -125,10 +125,9 @@ class gui():
 
 	def get_input(self):
 		con_input = self.locations['console'].get()
-		#!!!!!! Normalise input neded
-		normized_input = con_input
+		norm_input = normalise(con_input)
 		self.locations['console'].delete(0, END)
-		return normized_input
+		return norm_input
 
 	def update_stat_display(self):
 
@@ -196,13 +195,13 @@ class gui():
 			self.add_txt('choice', choice_out)
 			time.sleep(1)
 		else:
-
+			print('user_input - ' + user_input)
 			self.user_input = ""
-			if user_input == 'a':
+			if user_input == 'new game':
 				self.current_stage = stg_new_game
-			elif user_input== 'b':
+			elif user_input== 'load game':
 				self.current_stage = stg_load_game
-			elif user_input == 'c':
+			elif user_input == 'exit':
 				self.current_stage = stg_exit
 			elif user_input == '':
 				pass
@@ -211,24 +210,22 @@ class gui():
 			self.navigate()
 
 	def load_game(self):
-		update_text(out_console, 'Load game menu')
-		update_text(choice_console, 'Updated')
+		self.update_txt('narration', 'Load game menu')
+		self.update_txt('choice', 'Updated')
 
 
 	def new_game(self):
-		update_text(out_console, 'New game')
-		update_text(choice_console, 'Updated')
+		self.update_txt('narration', 'New game')
+		self.update_txt('choice', 'Updated')
 
 	def exit(self):
+		self.update_txt('narration', 'New game')
 		print("exiting")
 		quit()
 
 def init():
-
 	window = gui(player, 'Taffi Warz')
-
 	window.main.mainloop()
-
 
 
 init()

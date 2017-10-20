@@ -1,17 +1,30 @@
 from time import sleep
+#from data import global_game_items
 import os
+import re
+import string
 
-#Displaying ASCII Characters
+
+item_names = []
+#for item in global_game_items:
+	#item_names.append(item.id)
+
+directions = ['north', 'south', 'east', 'west']
+action_cmds = ['move', 'take', 'drop']
+
+keep_words = action_cmds + directions + item_names
 
 
+#Displaying ASCII drawing
 def draw_ascii(path):
-	out = ""
+	out = ''
 	ascii_file = open(path, 'r')
 	for line in ascii_file:
-		out += line[:-1] + "\n"
+		out += line
 	return out
-def draw_anim_ascii(path):
-
+#Displaying ascii drawing with effect
+def draw_anim_ascii(path, gui, output_widget):
+	out = ''
 	a_file = open(path, 'r')
 	line_len_list = []
 	for line in a_file:
@@ -19,19 +32,26 @@ def draw_anim_ascii(path):
 
 	max_len = max(line_len_list)
 	for i in range(0, max_len):
-		clear()
-
 		ascii_file = open(path, 'r')
 		for line in ascii_file:
-			new_line = line[:-1]
-			print(new_line[0:i])
+			new_line = line
+			gui.update_txt(output_widget,new_line[0:i])
 
-		sleep(0.005)
+#Norm input by removing spaces and punct
+def normalise(text):
+	#re.sub("[^\w\s]","",text) NOT WORKING
+	no_punct = re.sub(r'[^\w\s]','',text)
+	no_space = re.sub(r'^\s+|\s+$','',text)
+	return no_space.lower()
 
-#Clear the console to keep game neat
 
-def clear():
-	os.system('cls' if os.name == 'nt' else 'clear')
+#Filter to remove uselees words
+def filter_input(text):
+	global keep_words
+	words = text.split()
+	new_words = []
+	for word in words:
+		if word in keep_words:
+			new_words.append(word)
 
-def normalise(str):
-	return str
+	return new_words

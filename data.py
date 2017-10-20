@@ -33,5 +33,6 @@ stg_other_menu = Stage('other menu', 'other menu', ['Welcome  Krill'],  ['Start'
 stg_new_game = Stage('new game', 'new game', ['Welcome  Krill'],  ['Start', 'Exit'])
 stg_load_game = Stage('load game', 'load game', ['Welcome  Krill'],  ['Start', 'Exit'])
 stg_exit = Stage('exit', 'Exiting', ['Welcome  Krill'],  ['Start', 'Exit'])
+stg_lost = Stage('lost', 'You Loose', ['You lost'],  ['Start', 'Exit'])
 
 stages = [stg_start, stg_main_menu, stg_other_menu, stg_new_game, stg_load_game, stg_exit]

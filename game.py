@@ -82,7 +82,6 @@ class gui():
 		print('navigating')
 		stage = self.current_stage
 		user_input = self.user_input
-
 		if user_input == "":
 			self.set_title(stage.name)
 			self.update_txt('narration', stage.narration[0])
@@ -130,18 +129,23 @@ class gui():
 					#self.main_menu()
 			self.navigate()
 
+
 	#Event driven fuctions
 	def rtn_pressed(self, event):
 		print("Input - Enter Key")
 		self.user_input = self.get_input()
 		user_input = self.user_input
-		if user_input == 'back':
+		if type(user_input) == str:
+			user_input = user_input.split(" ")
+		if user_input[0] == 'back':
 			#return to main menu
 			print('going back')
 			self.current_stage = stg_main_menu
-		elif user_input == 'attack':
+		elif user_input[0] == 'attack':
 			#TESTING HP BAR
 			amount = 1
+			if len(user_input) > 1:
+				amount = int(user_input[1])
 			print('testing taking ' + str(amount) + ' hp')
 			self.player.stats['health']['curh'] -= amount
 			self.update_hp_bar()
@@ -212,14 +216,20 @@ class gui():
 		update_txt = ""
 		player_vitals = self.player.stats['health']
 
-		full_sym = '♥'
-		half_sym = '💛'
+		if player_vitals['curh'] <= 0:
+			print("Player Dead")
+			self.user_input = ""
+			self.current_stage = stg_lost
+			player_vitals['curh'] = 0
+
+		full_sym = '\u2665'
+		half_sym = '\u2661'
 		none_sym = 'x'
 
 		full_sym_num=int(player_vitals['curh']/2)
-		half_sym_num=int((full_sym_num*2 - player_vitals['curh']))
-		none_sym_num=int(player_vitals['maxh']-player_vitals['curh'])
-
+		half_sym_num=int(player_vitals['curh']%2)
+		none_sym_num=int(player_vitals['maxh']/2-half_sym_num-full_sym_num)
+		print ('updating health, full_sym_num: ' + str(full_sym_num) + ',half_sym_num: ' + str(half_sym_num) + ', none_sym_num: '+ str(none_sym_num))
 		symbols = full_sym_num * full_sym + half_sym_num * half_sym + none_sym_num * none_sym
 		print ('updating health, cur hp: ' + str(player_vitals['curh']) + ', max hp: ' + str(player_vitals['curh']) + ', symbols: '+ symbols)
 		self.update_txt('hp', symbols)
@@ -242,37 +252,6 @@ class gui():
 		self.update_hp_bar()
 		#self.update_txt('narration', "")
 		#self.update_txt('choice', "")
-
-	#displays the main menu of the game
-	def main_menu(self):
-		#Display
-		self.current_stage = stg_main_menu
-
-		user_input = self.user_input
-
-		if user_input == "":
-			self.update_txt('narration', narration_out)
-			self.update_txt('choice', choice_out)
-			time.sleep(1)
-		else:
-			print('user_input - ' + user_input)
-			self.user_input = ""
-			if user_input == 'new game':
-				self.current_stage = stg_new_game
-			elif user_input== 'load game':
-				self.current_stage = stg_load_game
-			elif user_input == 'exit':
-				self.current_stage = stg_exit
-			elif user_input == '':
-				pass
-			else:
-				self.update_txt('choice', "Invalid, You said: " + user_input + "\n")
-			self.navigate()
-
-	def exit(self):
-		self.update_txt('narration', 'New game')
-		print("exiting")
-		quit()
 
 def init():
 	player = Actor(inventory, 'Kirill')

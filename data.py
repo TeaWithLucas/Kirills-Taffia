@@ -1,5 +1,4 @@
 from classes import *
-from functions import *
 
 book_item = Item('Book', 'an old book', 'This is a very old looking book.')
 gun_item = Item('Gun', 'a shiny gun', 'This is a very reliable weapon.')
@@ -36,3 +35,12 @@ stg_exit = Stage('exit', 'Exiting', ['Welcome  Krill'],  ['Start', 'Exit'])
 stg_lost = Stage('lost', 'You Loose', ['You lost'],  ['Start', 'Exit'])
 
 stages = [stg_start, stg_main_menu, stg_other_menu, stg_new_game, stg_load_game, stg_exit]
+
+item_names = []
+#for item in global_game_items:
+	#item_names.append(item.id)
+
+directions = ['north', 'south', 'east', 'west']
+action_cmds = ['move', 'take', 'drop']
+
+keep_words = action_cmds + directions + item_names

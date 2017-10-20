@@ -92,7 +92,7 @@ class gui():
 			else:
 				self.update_choices()
 		else:
-			print('user_input - ' + user_input)
+			print('user_input - ' + user_input[0])
 			self.user_input = ""
 			if user_input == 'start':
 				self.current_stage = stg_act1
@@ -103,7 +103,7 @@ class gui():
 			elif user_input == '':
 				pass
 			else:
-				self.update_txt('choice', "Invalid, You said: " + user_input + "\n")
+				self.update_txt('choice', "Invalid, You said: " + user_input[0] + "\n")
 				if not(stage):
 					print("Error - Stage not set")
 					#self.main_menu()
@@ -133,10 +133,8 @@ class gui():
 	#Event driven fuctions
 	def rtn_pressed(self, event):
 		print("Input - Enter Key")
-		self.user_input = self.get_input()
+		self.user_input =self.get_input()
 		user_input = self.user_input
-		if type(user_input) == str:
-			user_input = user_input.split(" ")
 		if user_input[0] == 'back':
 			#return to main menu
 			print('going back')
@@ -155,7 +153,7 @@ class gui():
 	def narrate(self):
 		narration = self.remaining_narration
 		print(narration[0])
-		self.update_txt('narration', narration[0])
+		self.add_txt('narration', '\n' + narration[0])
 		if len(narration) > 1:
 			self.remaining_narration = narration[1:]
 			self.main.after(1000, self.narrate)
@@ -186,9 +184,13 @@ class gui():
 
 	def get_input(self):
 		con_input = self.locations['console'].get()
-		norm_input = normalise(con_input)
+		norm_input = normalise(con_input, self.current_stage.choicesinput)
 		self.locations['console'].delete(0, END)
-		return norm_input
+		if norm_input:
+			return norm_input
+		else:
+			return [""]
+		
 
 	def set_title(self, subtitle = ""):
 		if subtitle != "":

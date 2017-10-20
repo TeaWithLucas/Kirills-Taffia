@@ -40,6 +40,9 @@ class Stage():
 		self.name = name
 		self.narration = narration
 		self.choices = choices
+		self.choices_lower = []
+		for choice in self.choices:
+			self.choices_lower.append(choice.lower())
 
 """ The level class that is responsible for navigation on the map for that level """
 
@@ -106,7 +109,7 @@ class Level():
 			#Let player select exit
 			direction = self.exit_selection(exits)
 			#move the player
-			self.current_room = self.move_player(exits, direction)		
+			self.current_room = self.move_player(exits, direction)
 
 
 

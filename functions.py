@@ -5,14 +5,6 @@ import re
 import string
 
 
-item_names = []
-#for item in global_game_items:
-	#item_names.append(item.id)
-
-directions = ['north', 'south', 'east', 'west']
-action_cmds = ['move', 'take', 'drop']
-
-keep_words = action_cmds + directions + item_names
 
 
 #Displaying ASCII drawing
@@ -38,17 +30,18 @@ def draw_anim_ascii(path, gui, output_widget):
 			gui.update_txt(output_widget,new_line[0:i])
 
 #Norm input by removing spaces and punct
-def normalise(text):
-	#re.sub("[^\w\s]","",text) NOT WORKING
+def normalise(text, keep_words):
+	print()
 	no_punct = re.sub(r'[^\w\s]','',text)
 	no_space = re.sub(r'^\s+|\s+$','',text)
+	final = filter_input(no_space, keep_words)
 	return no_space.lower()
 
 
 #Filter to remove uselees words
-def filter_input(text):
-	global keep_words
-	words = text.split()
+def filter_input(text, keep_words):
+	print('Flitering...')
+	words = text.split(' ')
 	new_words = []
 	for word in words:
 		if word in keep_words:

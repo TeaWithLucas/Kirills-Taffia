@@ -15,6 +15,7 @@ class gui():
 		self.player = player
 		self.user_input = ""
 		self.current_stage = stg_start
+		self.n = 0
 
 		#TK gui window
 		self.main = Tk ()
@@ -24,7 +25,7 @@ class gui():
 
 		bg_image = PhotoImage(file = "bg3.png")
 		map_sprite = PhotoImage(file = "map.png")
-
+		
 		#window background
 		frame = Label(main, image = bg_image)
 
@@ -34,7 +35,7 @@ class gui():
 		map_widget = Label(main,  image = map_sprite)
 		inv_widget = Text(main, bg = '#262820',fg = 'white', width = 25, height = 15)
 		stat_widget = Text(main, bg = '#262820', fg = 'green', width = 25, height = 15)
-		hp_widget = Text(stat_widget, bg = 'black', fg = 'red')
+		hp_widget = Text(stat_widget, bg = 'black', fg = 'red', font = (20))
 		narration_widget = Text(main, bg = 'black', fg = 'yellow', width = 100)
 		choice_widget = Text(main, bg = 'black', fg = 'yellow', width = 100, height = 10)
 
@@ -50,7 +51,7 @@ class gui():
 		hp_widget.place(x=0, y=0, relwidth =1, relheight = 0.1)
 		narration_widget.grid(row = 1, column = 2, rowspan = 2)
 		choice_widget.grid(row = 3, column = 1, columnspan = 3)
-		
+
 
 		inv_widget.config(state = DISABLED)
 		choice_widget.config(state = DISABLED)
@@ -132,6 +133,7 @@ class gui():
 
 	#Event driven fuctions
 	def rtn_pressed(self, event):
+
 		print("Input - Enter Key")
 		self.user_input = self.get_input()
 		user_input = self.user_input
@@ -152,10 +154,11 @@ class gui():
 
 		self.navigate()
 
+
 	def narrate(self):
 		narration = self.remaining_narration
 		print(narration[0])
-		self.update_txt('narration', narration[0])
+		self.add_txt('narration', '\n' + narration[0])
 		if len(narration) > 1:
 			self.remaining_narration = narration[1:]
 			self.main.after(1000, self.narrate)
@@ -181,12 +184,13 @@ class gui():
 		self.locations[location].insert(END, input)
 		self.locations[location].config(state = DISABLED)
 
+
 	def get_txt(self, location):
 		return self.locations[location].get(1.0, END)
 
 	def get_input(self):
 		con_input = self.locations['console'].get()
-		norm_input = normalise(con_input)
+		norm_input = normalise(con_input, self.current_stage.choices_lower)
 		self.locations['console'].delete(0, END)
 		return norm_input
 

@@ -27,7 +27,7 @@ rooms = {
 level_reception = Level(1, 'uni', 'This level is about the uni', rooms['Reception'])
 
 stg_start = Stage('start', 'Main Menu', [draw_ascii('welcome.txt') + '\n\n\n\n\n' + 'Welcome  Krill'],  ['Start', 'Exit'])
-stg_act1 = Stage('act1', 'Act1', ['Welcome  Krill', 'where is my cat', 'Welcome  Krill', 'where is my cat', 'Welcome  Krill', 'where is my cat'],  ['Attack', 'Attack'])
+stg_act1 = Stage('act1', 'Act1', ['You slowly come to your sences.', 'There are voices outside of your office and it looks like you have fallen asleep while working.', 'Welcome  Krill', 'where is my cat', 'Welcome  Krill', 'where is my cat'],  ['Attack', 'Attack'])
 stg_main_menu = Stage('main menu', 'main menu', ['Welcome  Krill'], ['Start', 'Exit'])
 stg_other_menu = Stage('other menu', 'other menu', ['Welcome  Krill'],  ['Start', 'Exit'])
 stg_new_game = Stage('new game', 'new game', ['Welcome  Krill'],  ['Start', 'Exit'])

@@ -7,12 +7,11 @@ from tkinter import *
 
 class gui():
 	#constructor called on creation
-	def __init__(self, player, title = 'the game'):
-
+	def __init__(self, title = 'the game'):
 		print('initialisng gui')
 		self.running = True
 		self.title = title
-		self.player = player
+		self.player = Actor('Kirill',[book_item, gun_item])
 		self.user_input = ""
 		self.current_stage = stg_start
 
@@ -22,34 +21,43 @@ class gui():
 		main.resizable(width = False, height = False)
 		main.title(self.title)
 
-		bg_image = PhotoImage(file = "bg3.png")
+		bg_image = PIL.ImageTk.PhotoImage(PIL.Image.open("./assets/back.jpg"))
 		map_sprite = PhotoImage(file = "map.png")
 
 		#window background
 		frame = Label(main, image = bg_image)
-
+		frame.place(x=0, y=0, relwidth=1, relheight=1)
 
 		#creating each widget
-		console_widget = Entry(main, bg = '#6a8c87', fg = 'white', width = 100)
-		map_widget = Label(main,  image = map_sprite)
-		inv_widget = Text(main, bg = '#262820',fg = 'white', width = 25, height = 15)
-		stat_widget = Text(main, bg = '#262820', fg = 'green', width = 25, height = 15)
-		hp_widget = Text(stat_widget, bg = 'black', fg = 'red')
-		narration_widget = Text(main, bg = 'black', fg = 'yellow', width = 100)
-		choice_widget = Text(main, bg = 'black', fg = 'yellow', width = 100, height = 10)
+		frame_left = Frame(main)
+		frame_left.grid(column = 1, row = 1)
+
+		stat_widget = Text(frame_left, bg = '#262820', fg = 'green', width = 25, height = 15)
+		hp_widget = Text(stat_widget, bg = 'black', fg = 'red', font = (20))
+		inv_widget = Text(frame_left, bg = '#262820',fg = 'white', width = 25, height = 15)
+
+		stat_widget.grid(row = 1, column = 1)
+		hp_widget.place(x=0, y=0, relwidth =1, relheight = 0.1)
+		inv_widget.grid(row = 2, column = 1)
+
+		frame_middle = Frame(main)
+		frame_middle.grid(column = 2, row = 1)
+
+		narration_widget = Text(frame_middle, bg = 'black', fg = 'yellow', width = 100)
+		choice_widget = Text(frame_middle, bg = 'black', fg = 'yellow', width = 100, height = 10)
+		console_widget = Entry(frame_middle, bg = '#6a8c87', fg = 'white', width = 100)
+		narration_widget.grid(row = 1, column = 1)
+		choice_widget.grid(row = 2, column = 1)
+		console_widget.grid(row = 3, column = 1)
+
+		frame_right = Frame(main)
+		frame_right.grid(column = 3, row = 1)
+
+		map_widget = Label(frame_right,  image = map_sprite)
+		map_widget.grid(row = 1, column = 1)
 
 		frame.image = bg_image
 		map_widget.image = map_sprite
-
-		#Display and layout of all widgets
-		frame.place(x=0, y=0, relwidth=1, relheight=1)
-		console_widget.grid(row = 4, column = 1, columnspan = 3)
-		map_widget.grid(row = 1, column = 1)
-		inv_widget.grid(row = 1, column = 3, rowspan = 2)
-		stat_widget.grid(row = 2, column = 1)
-		hp_widget.place(x=0, y=0, relwidth =1, relheight = 0.1)
-		narration_widget.grid(row = 1, column = 2, rowspan = 2)
-		choice_widget.grid(row = 3, column = 1, columnspan = 3)
 		
 
 		inv_widget.config(state = DISABLED)
@@ -84,13 +92,9 @@ class gui():
 		user_input = self.user_input
 		if user_input == "":
 			self.set_title(stage.name)
-			self.update_txt('narration', stage.narration[0])
-			self.update_txt('choice', "[Scene]")
-			if len(stage.narration) > 1:
-				self.remaining_narration = stage.narration[1:]
-				self.main.after(1000, self.narrate)
-			else:
-				self.update_choices()
+			self.clear_middle()
+			self.remaining_narration = stage.narration
+			self.narrate()
 		else:
 			print('user_input - ' + user_input[0])
 			self.user_input = ""
@@ -152,8 +156,15 @@ class gui():
 
 	def narrate(self):
 		narration = self.remaining_narration
-		print(narration[0])
-		self.add_txt('narration', '\n' + narration[0])
+		print(narration[0]['speaker'].name + ':\t\t\"' + narration[0]['dialog'] + '\"')
+		output = "\n\n"
+		output2 = narration[0]['dialog'] + ''
+		if narration[0]['speaker'] == char_narrator:
+			output += '\t' + output2
+		else:
+			output += narration[0]['speaker'].name + ':\t\t\"' + output2 + '\"'
+		
+		self.add_txt('narration', output)
 		if len(narration) > 1:
 			self.remaining_narration = narration[1:]
 			self.main.after(1000, self.narrate)
@@ -186,10 +197,7 @@ class gui():
 		con_input = self.locations['console'].get()
 		norm_input = normalise(con_input, self.current_stage.choicesinput)
 		self.locations['console'].delete(0, END)
-		if norm_input:
-			return norm_input
-		else:
-			return [""]
+		return norm_input
 		
 
 	def set_title(self, subtitle = ""):
@@ -240,7 +248,7 @@ class gui():
 		update_txt = ""
 		update_txt += '\t[INVENTORY]\n\n'
 		for item in self.player.inv:
-			update_txt += '  ---  ' + item.id + '\n'
+			update_txt += '  ---  ' + item.itemid + '\n'
 		self.update_txt('inv', update_txt)
 
 	def update_choices(self):
@@ -248,16 +256,18 @@ class gui():
 			self.add_txt('choice', "\t\t\t\t" + choice + "\n")
 
 	def refresh(self):
-		print('refreshing and clearing windows')
+		print('refreshing windows')
 		self.update_stat_display()
 		self.update_inv_display()
 		self.update_hp_bar()
-		#self.update_txt('narration', "")
-		#self.update_txt('choice', "")
+
+	def clear_middle(self):
+		print('clearing narration and choice widgets')
+		self.update_txt('narration', "")
+		self.update_txt('choice', "")
 
 def init():
-	player = Actor(inventory, 'Kirill')
-	window = gui(player, 'Taffi Warz')
+	window = gui('Taffi Warz')
 	window.main.mainloop()
 
 

@@ -1,12 +1,14 @@
 import time
 from functions import *
 from tkinter import *
+import PIL.ImageTk
+import PIL.Image
 
 """ These are the classes which are the structures for different objects in the game """
 
 
 class Actor():
-	def __init__(self, inv, name='Blank_name'):
+	def __init__(self, name='Blank_name', inv=[]):
 		self.name = name
 		self.inv = inv
 		self.stats = {
@@ -142,8 +144,8 @@ class GradientFrame(Canvas):
 		self.lower("gradient")
 
 class Item():
-	def __init__(self, id, name, description):
-		self.id = id
+	def __init__(self, itemid, name, description):
+		self.itemid = itemid
 		self.name = name
 		self.description = description
 

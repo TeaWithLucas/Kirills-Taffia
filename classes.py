@@ -1,11 +1,14 @@
 import time
 from functions import *
 from tkinter import *
+import PIL.ImageTk
+import PIL.Image
 
 """ These are the classes which are the structures for different objects in the game """
 
+
 class Actor():
-	def __init__(self, inv, name='Blank_name'):
+	def __init__(self, name='Blank_name', inv=[]):
 		self.name = name
 		self.inv = inv
 		self.stats = {
@@ -39,9 +42,9 @@ class Stage():
 		self.name = name
 		self.narration = narration
 		self.choices = choices
-		self.choices_lower = []
-		for choice in self.choices:
-			self.choices_lower.append(choice.lower())
+		self.choicesinput = []
+		for choice in choices:
+			self.choicesinput.append(choice.lower())
 
 """ The level class that is responsible for navigation on the map for that level """
 
@@ -108,7 +111,7 @@ class Level():
 			#Let player select exit
 			direction = self.exit_selection(exits)
 			#move the player
-			self.current_room = self.move_player(exits, direction)
+			self.current_room = self.move_player(exits, direction)		
 
 
 
@@ -141,8 +144,8 @@ class GradientFrame(Canvas):
 		self.lower("gradient")
 
 class Item():
-	def __init__(self, id, name, description):
-		self.id = id
+	def __init__(self, itemid, name, description):
+		self.itemid = itemid
 		self.name = name
 		self.description = description
 

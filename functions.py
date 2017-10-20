@@ -4,7 +4,6 @@ import os
 import re
 import string
 
-
 #Displaying ASCII drawing
 def draw_ascii(path):
 	out = ''
@@ -44,5 +43,6 @@ def filter_input(text, keep_words):
 	for word in words:
 		if word in keep_words:
 			new_words.append(word)
-
+	if len(new_words) < 1:
+		new_words = [""]
 	return new_words

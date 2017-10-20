@@ -4,7 +4,6 @@ from tkinter import *
 
 """ These are the classes which are the structures for different objects in the game """
 
-
 class Actor():
 	def __init__(self, inv, name='Blank_name'):
 		self.name = name

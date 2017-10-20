@@ -24,6 +24,7 @@ rooms = {
 	'Class': room_class
 }
 
+
 level_reception = Level(1, 'uni', 'This level is about the uni', rooms['Reception'])
 
 stg_start = Stage('start', 'Main Menu', [draw_ascii('welcome.txt') + '\n\n\n\n\n' + 'Welcome  Krill'],  ['Start', 'Exit'])

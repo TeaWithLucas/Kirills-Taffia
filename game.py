@@ -78,6 +78,7 @@ class gui():
 		#Start
 		self.navigate()
 
+
 	def navigate(self):
 		self.refresh()
 		print('navigating')

@@ -5,8 +5,6 @@ import re
 import string
 
 
-
-
 #Displaying ASCII drawing
 def draw_ascii(path):
 	out = ''

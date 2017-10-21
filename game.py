@@ -165,10 +165,12 @@ class gui():
 		output2 = narration[0]['dialog'] + ''
 		if narration[0]['speaker'] == char_narrator:
 			output += output2
+			self.add_txt('narration', output, narration_tag, narration_color, True)
 		else:
 			output += narration[0]['speaker'].name + ':\t\t\"' + output2 + '\"'
+			self.add_txt('narration', output, narration_tag, narration_color)
 
-		self.add_txt('narration', output, narration_tag, narration_color)
+
 		if len(narration) > 1:
 			self.remaining_narration = narration[1:]
 			self.main.after(1000, self.narrate)
@@ -189,10 +191,11 @@ class gui():
 		self.locations[location].insert(END, input)
 		self.locations[location].config(state = DISABLED)
 
-	def add_txt(self, location, input, tag, color):
+	def add_txt(self, location, input, tag, color, italic = False):
 		self.locations[location].config(state = NORMAL)
 		self.locations[location].insert(END, input, tag)
 		self.locations[location].tag_config(tag, foreground = color)
+		self.locations[location].see(END)
 		self.locations[location].config(state = DISABLED)
 
 	def get_txt(self, location):

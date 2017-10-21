@@ -164,7 +164,7 @@ class gui():
 		narration_color = narration[0]['speaker'].speech_color
 		output2 = narration[0]['dialog'] + ''
 		if narration[0]['speaker'] == char_narrator:
-			output += '\t' + output2
+			output += output2
 		else:
 			output += narration[0]['speaker'].name + ':\t\t\"' + output2 + '\"'
 

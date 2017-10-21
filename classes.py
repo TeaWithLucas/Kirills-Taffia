@@ -3,6 +3,7 @@ from functions import *
 from tkinter import *
 
 
+
 """ These are the classes which are the structures for different objects in the game """
 
 
@@ -24,21 +25,22 @@ class Actor():
 	def calc_stats(self):
 		cur_maxh = self.stats['health']['maxh']
 		cur_curh = self.stats['health']['curh']
-		new_maxh = self.stats['special']['str'] * 8
+		new_maxh = self.stats['special']['str'] * 20
 		new_curh = cur_curh + (new_maxh - cur_maxh)
 		self.stats['health'] = {'maxh': new_maxh, 'curh': new_curh}
 
 """The room class. Rooms will for maps which will be assigned to levels. The rooms will determine the story. """
 
-class Room():
-	def __init__(self, name, des, exits, items):
+class Location():
+	def __init__(self, name, des, items):
 		self.name = name
 		self.description = des
-		self.exits = exits
 		self.items = items
 
+"""The Stage class allows to navigate through the game"""
 class Stage():
-	def __init__(self, stage_id, name, narration, choices):
+	def __init__(self,location, stage_id, name, narration, choices):
+		self.location = location
 		self.stage_id = stage_id
 		self.name = name
 		self.narration = narration
@@ -47,102 +49,89 @@ class Stage():
 		for choice in choices:
 			self.choicesinput.append(choice.lower())
 
-""" The level class that is responsible for navigation on the map for that level """
-
-class Level():
-	def __init__(self, id, title, intro_text, current_room):
-		self.id = id
-		self.title = title
-		self.intro_text = intro_text
-		self.current_room = current_room
-
-	def start(self):
-
-		#print(self.intro_text)
-		#print_level()
-		draw_ascii('map.txt')
-		#print('\n\n\n\n Press ENTER to continue...')
-		#a = input()
-		self.level_main()
-
-	def show_room(self, room):
-
-		print('\n' + room.name.upper() + '\n')
-		print(room.description + '\n')
+"""The Stage Manager allows to easily change stages, take inputs and display all the outputs"""
+class Stage_Manager():
+	def __init__(self, all_stages, gui_obj, narrator):
+		self.all_stages = all_stages
+		self.gui_obj = gui_obj
+		self.current_stage = self.all_stages['start']
+		self.stages_availiable = []
+		self.remaining_narration = self.current_stage.narration
+		self.narrator = narrator
 
 
-	def exit_leads_to(self, exits, direction):
+	#Will play out the current stage
+	def narrate_current_stage(self):
+		#Narrate stage
+		self.load_loc_description()
+		narration = self.remaining_narration
+		output = "\n\n"
+		narration_tag = narration[0]['speaker'].tag
+		narration_color = narration[0]['speaker'].speech_color
+		output2 = narration[0]['dialog'] + ''
+		if narration[0]['speaker'] == self.narrator:
+			output += output2
+		else:
+			output += narration[0]['speaker'].name + ':\t\t\"' + output2 + '\"'
 
-		return rooms[exits[direction]].name
+		self.gui_obj.add_txt('narration', output, narration_tag, narration_color)
 
-	def print_line(self, direction, leads_to):
+		if len(narration) > 1:
+			print('Getting more narration')
+			self.remaining_narration = narration[1:]
+			self.gui_obj.main.after(500, self.narrate_current_stage)
+		else:
+			print('Now diplay choices')
+			self.update_choices()
 
-		print('Go ' + direction.upper() + ' to ' + leads_to + '.')
 
-	def display_exits(self, exits):
-		print('Select action:')
-		for exit in exits:
-			self.print_line(exit, self.exit_leads_to(exits, exit))
-
-	def exit_selection(self,exits):
-		while True:
-
-			#display the options
-			self.display_exits(exits)
-			#get input
-			#ans = input()
-			#normalise input
-
-			#validate input
-
-			return ans
-
-	def move_player(self, exits, direction):
-
-		return rooms[exits[direction]]
-
-	#the level loop
-	def level_main(self):
-		while True:
-
-			#Display current situation
-			self.show_room(self.current_room)
-			#Get exits
-			exits = self.current_room.exits
-			#Let player select exit
-			direction = self.exit_selection(exits)
-			#move the player
-			self.current_room = self.move_player(exits, direction)
+	#Output choices for stage
+	def update_choices(self):
+		for i in self.current_stage.choices:
+			self.gui_obj.add_txt('choice', '\t\t\t\t' + i.upper() + '\n', self.gui_obj.player.tag, self.gui_obj.player.speech_color)
 
 
 
-class GradientFrame(Canvas):
-	'''A gradient frame which uses a canvas to draw the background'''
-	def __init__(self, parent, borderwidth=1, relief="sunken"):
-		Canvas.__init__(self, parent, borderwidth=borderwidth, relief=relief)
-		self._color1 = '#152018'
-		self._color2 = '#344e3a'
-		self.bind("<Configure>", self._draw_gradient)
+	def take_input(self, input):
+		input_words_list = input.split()
+		if input_words_list[0] == 'take':
+			print('Take')
+			item_name = input_words_list[1]
+			print(item_name)
+			for i in self.current_stage.location.items:
+				print(i.name.lower() + ' == ' + item_name)
+				if i.itemid.lower() == item_name:
+					print('Removing item')
+					self.current_stage.location.items.remove(i)
+					self.gui_obj.player.inv.append(i)
 
-	def _draw_gradient(self, event=None):
-		'''Draw the gradient'''
-		self.delete("gradient")
-		width = self.winfo_width()
-		height = self.winfo_height()
-		limit = width
-		(r1,g1,b1) = self.winfo_rgb(self._color1)
-		(r2,g2,b2) = self.winfo_rgb(self._color2)
-		r_ratio = float(r2-r1) / limit
-		g_ratio = float(g2-g1) / limit
-		b_ratio = float(b2-b1) / limit
 
-		for i in range(limit):
-			nr = int(r1 + (r_ratio * i))
-			ng = int(g1 + (g_ratio * i))
-			nb = int(b1 + (b_ratio * i))
-			color = "#%4.4x%4.4x%4.4x" % (nr,ng,nb)
-			self.create_line(i,0,i,height, tags=("gradient",), fill=color)
-		self.lower("gradient")
+		elif input == 'exit':
+			quit()
+		else:
+			if self.check_in_choices(input):
+				self.current_stage = self.select_stage(self.current_stage.choices[input])
+				self.get_narration()
+
+	def check_in_choices(self, text):
+		for choice_txt in self.current_stage.choices:
+			if text == choice_txt:
+				return True
+
+		return False
+
+	def select_stage(self, text):
+		for stage in self.all_stages:
+			if text == stage:
+				return self.all_stages[stage]
+
+	def get_narration(self):
+		self.remaining_narration = self.current_stage.narration
+
+	def load_loc_description(self):
+		location_description = self.current_stage.location.description
+		if not (location_description == ''):
+			self.current_stage.narration.insert(0, {'speaker':self.narrator, 'dialog':location_description})
 
 class Item():
 	def __init__(self, itemid, name, description):

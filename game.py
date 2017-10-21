@@ -12,9 +12,10 @@ class gui():
 		print('initialisng gui')
 		self.running = True
 		self.title = title
-		self.player = Actor('kirril_tag', 'yellow','Kirill',[book_item, gun_item])
+		self.player = Actor('kirril_tag', 'yellow','Kirill',[])
 		self.user_input = ""
-		self.current_stage = stg_start
+		#self.current_stage = stg_start
+		self.stage_man = Stage_Manager(stages,self,char_narrator)
 
 		#TK gui window
 		self.main = Tk ()
@@ -37,16 +38,18 @@ class gui():
 		hp_widget = Text(stat_widget, bg = 'black', fg = 'red', font = (20))
 		inv_widget = Text(frame_left, bg = '#262820',fg = 'white', width = 25, height = 15)
 
+
 		stat_widget.grid(row = 1, column = 1)
 		hp_widget.place(x=0, y=0, relwidth =1, relheight = 0.1)
 		inv_widget.grid(row = 2, column = 1)
+
 
 		frame_middle = Frame(main, width = 200)
 		frame_middle.grid(column = 2, row = 1)
 
 		narration_widget = Text(frame_middle, bg = 'black', fg = 'yellow')
 		choice_widget = Text(frame_middle, bg = 'black', fg = 'yellow', height = 10)
-		console_widget = Entry(frame_middle, bg = '#6a8c87', fg = 'white')
+		console_widget = Entry(frame_middle, bg = 'black', fg = 'white')
 		narration_widget.grid(row = 1, column = 1)
 		choice_widget.grid(row = 2, column = 1)
 		console_widget.grid(row = 3, column = 1)
@@ -56,7 +59,8 @@ class gui():
 
 		map_widget = Label(frame_right,  image = map_sprite)
 		map_widget.grid(row = 1, column = 1)
-
+		room_items_widget = Text(frame_right, bg = '#262820',fg = 'white', width = 25, height = 15)
+		room_items_widget.grid(row = 2, column = 1)
 
 		frame.image = bg_image
 		map_widget.image = map_sprite
@@ -73,6 +77,7 @@ class gui():
 			'console' : console_widget,
 			'map' : map_widget,
 			'inv' : inv_widget,
+			'room_items':room_items_widget,
 			'stats' : stat_widget,
 			'hp' : hp_widget,
 			'narration' : narration_widget,
@@ -84,98 +89,24 @@ class gui():
 		#Set focus on the console
 		console_widget.focus_set()
 
+
 		#Start
 		self.navigate()
 
 	def navigate(self):
+		self.clear_middle()
 		self.refresh()
-		print('navigating')
-		stage = self.current_stage
-		user_input = self.user_input
-		if user_input == "":
-			self.set_title(stage.name)
-			self.clear_middle()
-			self.remaining_narration = stage.narration
-			self.narrate()
-		else:
-			print('user_input - ' + user_input[0])
-			self.user_input = ""
-			if user_input == 'start':
-				self.current_stage = stg_act1
-			elif user_input== 'load game':
-				self.current_stage = stg_load_game
-			elif user_input == 'exit':
-				self.current_stage = stg_exit
-			elif user_input == '':
-				pass
-			else:
-				self.update_txt('choice', "Invalid, You said: " + user_input[0] + "\n")
-				if not(stage):
-					print("Error - Stage not set")
-					#self.main_menu()
-				elif stage == stg_start:
-					#self.main_menu()
-					pass
-				elif stage == stg_main_menu:
-					#self.main_menu()
-					pass
-				elif stage == stg_other_menu:
-					pass
-				elif stage == stg_new_game:
-					#self.new_game()
-					pass
-				elif stage == stg_load_game:
-					pass
-					#self.load_game()
-				elif stage == stg_exit:
-					pass
-					#self.exit()
-				else:
-					print("Error - Stage not defined: " + str(stage))
-					#self.main_menu()
-			self.navigate()
+		self.set_title(self.stage_man.current_stage.name)
+		self.stage_man.narrate_current_stage()
+
 
 
 	#Event driven fuctions
 	def rtn_pressed(self, event):
 		print("Input - Enter Key")
-		self.user_input =self.get_input()
-		user_input = self.user_input
-		if user_input[0] == 'back':
-			#return to main menu
-			print('going back')
-			self.current_stage = stg_main_menu
-		elif user_input[0] == 'attack':
-			#TESTING HP BAR
-			amount = 1
-			if len(user_input) > 1:
-				amount = int(user_input[1])
-			print('testing taking ' + str(amount) + ' hp')
-			self.player.stats['health']['curh'] -= amount
-			self.update_hp_bar()
-
+		self.stage_man.take_input(self.get_input())
 		self.navigate()
 
-	def narrate(self):
-		narration = self.remaining_narration
-		print(narration[0]['speaker'].name + ':\t\t\"' + narration[0]['dialog'] + '\"')
-		output = "\n\n"
-		narration_tag = narration[0]['speaker'].tag
-		narration_color = narration[0]['speaker'].speech_color
-		output2 = narration[0]['dialog'] + ''
-		if narration[0]['speaker'] == char_narrator:
-			output += output2
-			self.add_txt('narration', output, narration_tag, narration_color, True)
-		else:
-			output += narration[0]['speaker'].name + ':\t\t\"' + output2 + '\"'
-			self.add_txt('narration', output, narration_tag, narration_color)
-
-
-		if len(narration) > 1:
-			self.remaining_narration = narration[1:]
-			self.main.after(1000, self.narrate)
-		else:
-			self.update_choices()
 
 
 	def update_clock(self):
@@ -191,7 +122,7 @@ class gui():
 		self.locations[location].insert(END, input)
 		self.locations[location].config(state = DISABLED)
 
-	def add_txt(self, location, input, tag, color, italic = False):
+	def add_txt(self, location, input, tag, color):
 		self.locations[location].config(state = NORMAL)
 		self.locations[location].insert(END, input, tag)
 		self.locations[location].tag_config(tag, foreground = color)
@@ -203,7 +134,7 @@ class gui():
 
 	def get_input(self):
 		con_input = self.locations['console'].get()
-		norm_input = normalise(con_input, self.current_stage.choicesinput)
+		norm_input = normalise(con_input, self.stage_man.current_stage.choicesinput)
 		self.locations['console'].delete(0, END)
 		return norm_input
 
@@ -258,6 +189,12 @@ class gui():
 		for item in self.player.inv:
 			update_txt += '  ---  ' + item.itemid + '\n'
 		self.update_txt('inv', update_txt)
+
+		update_txt_room = ''
+		update_txt_room += '     [YOU CAN PICK]\n\n'
+		for item in self.stage_man.current_stage.location.items:
+			update_txt_room += ' --- ' + item.itemid + '\n'
+		self.update_txt('room_items', update_txt_room)
 
 	def update_choices(self):
 		for choice in self.current_stage.choices:

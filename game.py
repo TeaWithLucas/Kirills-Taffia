@@ -12,7 +12,7 @@ class gui():
 		print('initialisng gui')
 		self.running = True
 		self.title = title
-		self.player = Actor('Kirill',[book_item, gun_item])
+		self.player = Actor('kirril_tag', 'yellow','Kirill',[book_item, gun_item])
 		self.user_input = ""
 		self.current_stage = stg_start
 
@@ -56,11 +56,11 @@ class gui():
 
 		map_widget = Label(frame_right,  image = map_sprite)
 		map_widget.grid(row = 1, column = 1)
-		
+
 
 		frame.image = bg_image
 		map_widget.image = map_sprite
-		
+
 
 		inv_widget.config(state = DISABLED)
 		choice_widget.config(state = DISABLED)
@@ -160,13 +160,15 @@ class gui():
 		narration = self.remaining_narration
 		print(narration[0]['speaker'].name + ':\t\t\"' + narration[0]['dialog'] + '\"')
 		output = "\n\n"
+		narration_tag = narration[0]['speaker'].tag
+		narration_color = narration[0]['speaker'].speech_color
 		output2 = narration[0]['dialog'] + ''
 		if narration[0]['speaker'] == char_narrator:
 			output += '\t' + output2
 		else:
 			output += narration[0]['speaker'].name + ':\t\t\"' + output2 + '\"'
-		
-		self.add_txt('narration', output)
+
+		self.add_txt('narration', output, narration_tag, narration_color)
 		if len(narration) > 1:
 			self.remaining_narration = narration[1:]
 			self.main.after(1000, self.narrate)
@@ -187,9 +189,10 @@ class gui():
 		self.locations[location].insert(END, input)
 		self.locations[location].config(state = DISABLED)
 
-	def add_txt(self, location, input):
+	def add_txt(self, location, input, tag, color):
 		self.locations[location].config(state = NORMAL)
-		self.locations[location].insert(END, input)
+		self.locations[location].insert(END, input, tag)
+		self.locations[location].tag_config(tag, foreground = color)
 		self.locations[location].config(state = DISABLED)
 
 	def get_txt(self, location):
@@ -200,7 +203,7 @@ class gui():
 		norm_input = normalise(con_input, self.current_stage.choicesinput)
 		self.locations['console'].delete(0, END)
 		return norm_input
-		
+
 
 	def set_title(self, subtitle = ""):
 		if subtitle != "":
@@ -255,7 +258,7 @@ class gui():
 
 	def update_choices(self):
 		for choice in self.current_stage.choices:
-			self.add_txt('choice', "\t\t\t\t" + choice + "\n")
+			self.add_txt('choice', "\t\t\t\t" + choice + "\n", self.player.tag, self.player.speech_color)
 
 	def refresh(self):
 		print('refreshing windows')

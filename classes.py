@@ -7,7 +7,9 @@ from tkinter import *
 
 
 class Actor():
-	def __init__(self, name='Blank_name', inv=[]):
+	def __init__(self,tag,speech_color, name='Blank_name', inv=[]):
+		self.speech_color = speech_color
+		self.tag = tag
 		self.name = name
 		self.inv = inv
 		self.stats = {
@@ -110,7 +112,7 @@ class Level():
 			#Let player select exit
 			direction = self.exit_selection(exits)
 			#move the player
-			self.current_room = self.move_player(exits, direction)		
+			self.current_room = self.move_player(exits, direction)
 
 
 

@@ -41,12 +41,12 @@ class gui():
 		hp_widget.place(x=0, y=0, relwidth =1, relheight = 0.1)
 		inv_widget.grid(row = 2, column = 1)
 
-		frame_middle = Frame(main)
+		frame_middle = Frame(main, width = 200)
 		frame_middle.grid(column = 2, row = 1)
 
-		narration_widget = Text(frame_middle, bg = 'black', fg = 'yellow', width = 100)
-		choice_widget = Text(frame_middle, bg = 'black', fg = 'yellow', width = 100, height = 10)
-		console_widget = Entry(frame_middle, bg = '#6a8c87', fg = 'white', width = 100)
+		narration_widget = Text(frame_middle, bg = 'black', fg = 'yellow')
+		choice_widget = Text(frame_middle, bg = 'black', fg = 'yellow', height = 10)
+		console_widget = Entry(frame_middle, bg = '#6a8c87', fg = 'white')
 		narration_widget.grid(row = 1, column = 1)
 		choice_widget.grid(row = 2, column = 1)
 		console_widget.grid(row = 3, column = 1)

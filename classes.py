@@ -1,8 +1,7 @@
 import time
 from functions import *
 from tkinter import *
-import PIL.ImageTk
-import PIL.Image
+
 
 """ These are the classes which are the structures for different objects in the game """
 

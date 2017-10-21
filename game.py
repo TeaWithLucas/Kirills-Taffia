@@ -3,7 +3,8 @@
 from classes import *
 from functions import *
 from data import *
-from tkinter import *
+import PIL.Image
+import PIL.ImageTk
 
 class gui():
 	#constructor called on creation

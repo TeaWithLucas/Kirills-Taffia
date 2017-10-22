@@ -5,6 +5,7 @@ from functions import *
 from data import *
 import PIL.Image
 import PIL.ImageTk
+import secrets
 
 class gui():
 	#constructor called on creation
@@ -160,7 +161,6 @@ class gui():
 				time.sleep(self.narration_speed)
 				self.main.update()
 		elif not(tag == 'Nikeen_Patel' or  tag == 'Kirill_Sidorov'):
-			print('centered')
 			for l in inputstr:
 				self.widgets[widget].insert(END, l , tag)
 				self.widgets[widget].tag_config(tag, foreground = color, justify = RIGHT)
@@ -171,6 +171,15 @@ class gui():
 			for l in inputstr:
 				self.widgets[widget].insert(END, l , tag)
 				self.widgets[widget].tag_config(tag, foreground = color)
+				self.widgets[widget].see(END)
+				time.sleep(self.narration_speed)
+				self.main.update()
+		if tag == 'on_drugs':
+			color_list = ['red','blue','green','lightreen','yellow','pink','white','gray']
+			direction_list = [LEFT, RIGHT, CENTER]
+			for l in inputstr:
+				self.widgets[widget].insert(END, l , tag)
+				self.widgets[widget].tag_config(tag, foreground = secrets.choice(color_list), justify = secrets.choice(direction_list))
 				self.widgets[widget].see(END)
 				time.sleep(self.narration_speed)
 				self.main.update()

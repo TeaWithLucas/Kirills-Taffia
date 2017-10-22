@@ -16,7 +16,7 @@ class Actor():
 		self.stats = {
 			'special': {'str':0, 'per':0, 'end':0, 'cha':0, 'int':0, 'agi':0, 'luc':0},
 			'health': {'curh':0, 'maxh':0},
-			'level': {'exp':0,'lvl':0,'nxt_lvl':0, 'nxt_exp':0}
+			'level': {'exp':0,'lvl':1,'nxt_lvl':0, 'nxt_exp':0}
 		}
 
 		self.stats['special'] = {'str':1, 'per':1, 'end':1, 'cha':1, 'int':1, 'agi':1, 'luc':1}
@@ -25,22 +25,22 @@ class Actor():
 	def calc_stats(self):
 		cur_maxh = self.stats['health']['maxh']
 		cur_curh = self.stats['health']['curh']
-		new_maxh = self.stats['special']['str'] * 20
+		new_maxh = self.stats['level']['lvl'] * 8 + self.stats['special']['end'] * 8
 		new_curh = cur_curh + (new_maxh - cur_maxh)
 		self.stats['health'] = {'maxh': new_maxh, 'curh': new_curh}
 
 """The room class. Rooms will for maps which will be assigned to levels. The rooms will determine the story. """
 
 class Location():
-	def __init__(self, name, des, items):
+	def __init__(self, locname, name, image = "", desc = ""):
+		self.locname = locname
 		self.name = name
-		self.description = des
-		self.items = items
+		self.image = image
+		self.description = desc
 
 """The Stage class allows to navigate through the game"""
 class Stage():
-	def __init__(self,location, stage_id, name, narration, choices):
-		self.location = location
+	def __init__(self, stage_id, name, narration, choices):
 		self.stage_id = stage_id
 		self.name = name
 		self.narration = narration
@@ -51,44 +51,47 @@ class Stage():
 
 """The Stage Manager allows to easily change stages, take inputs and display all the outputs"""
 class Stage_Manager():
-	def __init__(self, all_stages, gui_obj, narrator):
+	def __init__(self, gui_obj, all_stages, start_stage, narrator, waittime):
 		self.all_stages = all_stages
 		self.gui_obj = gui_obj
-		self.current_stage = self.all_stages['start']
+		self.current_stage = start_stage
 		self.stages_availiable = []
 		self.remaining_narration = self.current_stage.narration
+		self.current_location = []
 		self.narrator = narrator
+		self.waittime = waittime
 
 
 	#Will play out the current stage
 	def narrate_current_stage(self):
 		#Narrate stage
-		self.load_loc_description()
+		#self.load_loc_description()
 		narration = self.remaining_narration
+		cur_narr = narration[0]
 		output = "\n\n"
-		narration_tag = narration[0]['speaker'].tag
-		narration_color = narration[0]['speaker'].speech_color
-		output2 = narration[0]['dialog'] + ''
-		if narration[0]['speaker'] == self.narrator:
-			output += output2
+		output2 = cur_narr['dialog'] + ''
+		if self.change_location(cur_narr['location']):
+			if cur_narr['speaker'] == self.narrator:
+				output += output2
+			else:
+				output += cur_narr['speaker'].name + ':\t\t\"' + output2 + '\"'
+
+			self.gui_obj.add_txt('narration', output, cur_narr['speaker'].tag, cur_narr['speaker'].speech_color)
+
+			if len(narration) > 1:
+				print('Getting more narration')
+				self.remaining_narration = narration[1:]
+				self.gui_obj.main.after(self.waittime, self.narrate_current_stage)
+			else:
+				print('Now diplay choices')
+				self.update_choices()
 		else:
-			output += narration[0]['speaker'].name + ':\t\t\"' + output2 + '\"'
-
-		self.gui_obj.add_txt('narration', output, narration_tag, narration_color)
-
-		if len(narration) > 1:
-			print('Getting more narration')
-			self.remaining_narration = narration[1:]
-			self.gui_obj.main.after(500, self.narrate_current_stage)
-		else:
-			print('Now diplay choices')
-			self.update_choices()
-
+			self.gui_obj.main.after(self.waittime, self.narrate_current_stage)
 
 	#Output choices for stage
 	def update_choices(self):
-		for i in self.current_stage.choices:
-			self.gui_obj.add_txt('choice', '\t\t\t\t' + i.upper() + '\n', self.gui_obj.player.tag, self.gui_obj.player.speech_color)
+		for choice in self.current_stage.choices:
+			self.gui_obj.add_txt('choice', '\t\t\t\t' + choice.lower() + '\n', self.gui_obj.player.tag, self.gui_obj.player.speech_color)
 
 
 
@@ -122,16 +125,27 @@ class Stage_Manager():
 
 	def select_stage(self, text):
 		for stage in self.all_stages:
-			if text == stage:
-				return self.all_stages[stage]
+			if text == stage.stage_id:
+				return stage
 
 	def get_narration(self):
 		self.remaining_narration = self.current_stage.narration
 
-	def load_loc_description(self):
-		location_description = self.current_stage.location.description
-		if not (location_description == ''):
-			self.current_stage.narration.insert(0, {'speaker':self.narrator, 'dialog':location_description})
+	def change_location(self, new_location):
+		if self.current_location != new_location:
+			self.gui_obj.add_txt('narration', '\n\n' + new_location.description, self.narrator.tag, self.narrator.speech_color)
+			self.gui_obj.change_image('loc_img', './assets/' + new_location.image)
+			self.gui_obj.update_label('loc_desc', new_location.name)
+			#self.gui_obj.cur_loc = new_location.name
+			self.current_location = new_location
+			return False
+		else:
+			return True
+
+	#def load_loc_description(self):
+	#	location_description = self.current_stage.location.description
+	#	if not (location_description == ''):
+	#		self.current_stage.narration.insert(0, {'speaker':self.narrator, 'dialog':location_description})
 
 class Item():
 	def __init__(self, itemid, name, description):

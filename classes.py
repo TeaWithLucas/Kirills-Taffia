@@ -86,42 +86,21 @@ class Stage_Manager():
 				print('Now diplay choices')
 				self.update_choices()
 		else:
-			self.gui_obj.main.after(self.waittime, self.narrate_current_stage)
+			#self.gui_obj.main.after(self.waittime, self.narrate_current_stage)
+			self.narrate_current_stage()
 
 	#Output choices for stage
 	def update_choices(self):
 		for choice in self.current_stage.choices:
-			self.gui_obj.add_txt('choice', '\t\t\t\t' + choice.lower() + '\n', self.gui_obj.player.tag, self.gui_obj.player.speech_color)
-
+			self.gui_obj.add_txt('choice', '\t\t\t\t[' + choice.upper() + ']\n', self.gui_obj.player.tag, self.gui_obj.player.speech_color)
 
 
 	def take_input(self, input):
-		input_words_list = input.split()
-		if input_words_list[0] == 'take':
-			print('Take')
-			item_name = input_words_list[1]
-			print(item_name)
-			for i in self.current_stage.location.items:
-				print(i.name.lower() + ' == ' + item_name)
-				if i.itemid.lower() == item_name:
-					print('Removing item')
-					self.current_stage.location.items.remove(i)
-					self.gui_obj.player.inv.append(i)
-
-
-		elif input == 'exit':
+		if input == 'exit':
 			quit()
 		else:
-			if self.check_in_choices(input):
-				self.current_stage = self.select_stage(self.current_stage.choices[input])
-				self.get_narration()
-
-	def check_in_choices(self, text):
-		for choice_txt in self.current_stage.choices:
-			if text == choice_txt:
-				return True
-
-		return False
+			self.current_stage = self.select_stage(self.current_stage.choices[input])
+			self.get_narration()
 
 	def select_stage(self, text):
 		for stage in self.all_stages:

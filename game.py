@@ -20,6 +20,8 @@ class gui():
 		self.stage_man = Stage_Manager(self,stages,start_stage,char_narrator, waittime)
 		self.cur_health_symbols = "<health>"
 		self.cur_loc = "<location>"
+		self.narration_speed = 0.01
+		self.waittime = 0.5
 
 		#TK gui window
 		self.main = Tk ()
@@ -54,9 +56,9 @@ class gui():
 		frame_middle = Frame(frame)
 		frame_middle.pack( side = LEFT, fill=X)
 
-		narration_widget = Text(frame_middle, bg = 'black', fg = 'yellow')
-		choice_widget = Text(frame_middle, bg = 'black', fg = 'yellow', height = 10)
-		console_widget = Entry(frame_middle, bg = 'black', fg = 'white')
+		narration_widget = Text(frame_middle, bg = 'black', fg = 'yellow', padx = 20, pady = 20)
+		choice_widget = Text(frame_middle, bg = 'black', fg = 'yellow', height = 10, width = 85)
+		console_widget = Entry(frame_middle, bg = 'black', fg = 'white', width = 75)
 		narration_widget.grid(row = 1, column = 1)
 		choice_widget.grid(row = 2, column = 1)
 		console_widget.grid(row = 3, column = 1)
@@ -98,7 +100,7 @@ class gui():
 			'hp' : hp_widget,
 			'narration' : narration_widget,
 			'choice' : choice_widget
-			
+
 		}
 
 		console_widget.bind('<Return>', self.rtn_pressed)
@@ -145,9 +147,16 @@ class gui():
 
 	def add_txt(self, widget, inputstr, tag, color):
 		self.widgets[widget].config(state = NORMAL)
-		self.widgets[widget].insert(END, inputstr, tag)
-		self.widgets[widget].tag_config(tag, foreground = color)
-		self.widgets[widget].see(END)
+		self.widgets['console'].config(state = DISABLED)
+		for l in inputstr:
+			self.widgets[widget].insert(END, l , tag)
+			self.widgets[widget].tag_config(tag, foreground = color)
+			self.widgets[widget].see(END)
+			time.sleep(self.narration_speed)
+			self.main.update()
+		time.sleep(self.waittime)
+		self.widgets['console'].config(state = NORMAL)
+
 		self.widgets[widget].config(state = DISABLED)
 
 	def get_txt(self, widget):

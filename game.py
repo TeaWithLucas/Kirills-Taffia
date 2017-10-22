@@ -58,9 +58,9 @@ class gui():
 		frame_middle = Frame(frame)
 		frame_middle.pack( side = LEFT, fill=X)
 
-		narration_widget = Text(frame_middle, bg = 'black', fg = '#D3D3D3', padx = 20, pady = 20)
+		narration_widget = Text(frame_middle, bg = 'black', fg = '#D3D3D3', padx = 20, pady = 20, wrap = WORD)
 		choice_widget = Text(frame_middle, bg = 'black', fg = '#D3D3D3', height = 10, width = 85)
-		console_widget = Entry(frame_middle, bg = 'black', fg = 'white', width = 75)
+		console_widget = Entry(frame_middle, bg = 'black', fg = 'white', width = 75, insertwidth = 10 , insertbackground ='white')
 		narration_widget.grid(row = 1, column = 1)
 		choice_widget.grid(row = 2, column = 1)
 		console_widget.grid(row = 3, column = 1)
@@ -147,15 +147,26 @@ class gui():
 		self.widgets[widget].configure(text=inputstr)
 		#self.widgets[widget].text = inputstr
 
+
 	def add_txt(self, widget, inputstr, tag, color):
 		self.widgets[widget].config(state = NORMAL)
 		self.widgets['console'].config(state = DISABLED)
-		for l in inputstr:
-			self.widgets[widget].insert(END, l , tag)
-			self.widgets[widget].tag_config(tag, foreground = color)
-			self.widgets[widget].see(END)
-			time.sleep(self.narration_speed)
-			self.main.update()
+		print(tag)
+		if not(tag == 'Nikeen_Patel' or  tag == 'Kirill_Sidorov'):
+			for l in inputstr:
+				self.widgets[widget].insert(END, l , tag)
+				self.widgets[widget].tag_config(tag, foreground = color, justify = RIGHT)
+				self.widgets[widget].see(END)
+				time.sleep(self.narration_speed)
+				self.main.update()
+			time.sleep(self.waittime)
+		else:
+			for l in inputstr:
+				self.widgets[widget].insert(END, l , tag)
+				self.widgets[widget].tag_config(tag, foreground = color)
+				self.widgets[widget].see(END)
+				time.sleep(self.narration_speed)
+				self.main.update()
 		time.sleep(self.waittime)
 		self.widgets['console'].config(state = NORMAL)
 

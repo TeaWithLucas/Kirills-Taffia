@@ -79,30 +79,22 @@ class Stage_Manager():
 
 	#Will play out the current stage
 	def narrate_current_stage(self):
-		#Narrate stage
-		#self.load_loc_description()
-		narration = self.remaining_narration
-		cur_narr = narration[0]
-		output = "\n\n"
-		output2 = cur_narr['dialog'] + ''
-		if self.change_location(cur_narr['location']):
-			if cur_narr['speaker'] == self.narrator:
-				output += output2
-			else:
-				output += cur_narr['speaker'].name + ':\t\t\"' + output2 + '\"'
+		for narration in self.remaining_narration:
+			narration_tag = narration['speaker'].tag
+			narration_color = narration['speaker'].speech_color
+			output2 = narration['dialog'] + ''
+			output = ''
+			print(self.change_location(narration['location']))
+			if self.change_location(narration['location']):
+				if narration['speaker'] == self.narrator:
+					output +=  output2 + '\n\n'
+				else:
+					output +=  narration['speaker'].name + ': ' + output2 + '\n\n'
 
-			self.gui_obj.add_txt('narration', output, cur_narr['speaker'].tag, cur_narr['speaker'].speech_color)
 
-			if len(narration) > 1:
-				print('Getting more narration')
-				self.remaining_narration = narration[1:]
-				self.gui_obj.main.after(self.waittime, self.narrate_current_stage)
-			else:
-				print('Now diplay choices')
-				self.update_choices()
-		else:
-			#self.gui_obj.main.after(self.waittime, self.narrate_current_stage)
-			self.narrate_current_stage()
+				self.gui_obj.add_txt('narration', output, narration_tag, narration_color)
+
+		self.update_choices()
 
 	#Output choices for stage
 	def update_choices(self):
@@ -129,7 +121,7 @@ class Stage_Manager():
 		if self.current_location != new_location:
 			self.gui_obj.change_image('loc_img', './assets/' + new_location.image)
 			self.gui_obj.update_label('loc_desc', new_location.name)
-			self.gui_obj.add_txt('narration', '\n\n' + new_location.description, self.narrator.tag, self.narrator.speech_color)
+			self.gui_obj.add_txt('narration', new_location.description + '\n\n', self.narrator.tag, self.narrator.speech_color)
 			#self.gui_obj.cur_loc = new_location.name
 			self.current_location = new_location
 			return False

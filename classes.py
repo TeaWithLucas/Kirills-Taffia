@@ -88,18 +88,21 @@ class Stage_Manager():
 			if self.change_location(narration['location']):
 				if narration['speaker'] == self.narrator:
 					output +=  output2 + '\n\n'
+					self.gui_obj.add_txt('narration', output, 'center_tag', narration_color)
 				else:
 					output +=  narration['speaker'].name + ': ' + output2 + '\n\n'
+					self.gui_obj.add_txt('narration', output, narration_tag, narration_color)
 
 
-				self.gui_obj.add_txt('narration', output, narration_tag, narration_color)
+				self.gui_obj.add_txt('narration', '_____________________________________________________________________\n\n', 'center_tag', 'white')
 
 		self.update_choices()
 
 	#Output choices for stage
 	def update_choices(self):
 		for choice in self.current_stage.choices:
-			self.gui_obj.add_txt('choice', '\t\t\t\t[' + choice.upper() + ']\n', self.gui_obj.player.tag, self.gui_obj.player.speech_color)
+			print('c = ' + choice)
+			self.gui_obj.add_txt('choice', '[' + choice.upper() + ']    \n\n', 'center_tag', self.gui_obj.player.speech_color)
 
 
 	def take_input(self, input):

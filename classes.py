@@ -124,7 +124,8 @@ class Stage_Manager():
 		if self.current_location != new_location:
 			self.gui_obj.change_image('loc_img', './assets/' + new_location.image)
 			self.gui_obj.update_label('loc_desc', new_location.name)
-			self.gui_obj.add_txt('narration', new_location.description + '\n\n', self.narrator.tag, self.narrator.speech_color)
+			self.gui_obj.add_txt('narration', new_location.description + '\n\n', 'center_tag', self.narrator.speech_color)
+			self.gui_obj.add_txt('narration', '_____________________________________________________________________\n\n', 'center_tag', 'white')
 			#self.gui_obj.cur_loc = new_location.name
 			self.current_location = new_location
 			return False

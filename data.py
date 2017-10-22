@@ -35,7 +35,7 @@ loc_taf = Location('taf', 'The Taf Pubqueens', 'taf.bmp', 'Before you is a busy 
 loc_triad = Location('triad', 'Wu\'s Won Now Casino & Noodle Bar', 'triad.bmp', 'Before you is a busy cafe. The barista is strugling to keep up with the work load and looks at you desperately as you walk in.')
 #Stages
 
-stg_main_menu = Stage('main_menu', 'Main Menu', [{'speaker':actors['Nikeen_Patel'], 'dialog':(draw_ascii('./assets/welcome.txt') + '\n\n\n\n\n' + 'Welcome  Krill'), 'location': loc_menu}], {'start': 'act1', 'exit':'main_menu'})
+stg_main_menu = Stage('main_menu', 'Main Menu', [{'speaker':actors['Nikeen_Patel'], 'dialog':(draw_ascii('./assets/welcome.txt') + '\n\n\n\n\n' + 'Welcome  Kirill\t'), 'location': loc_menu}], {'start': 'act1', 'exit':'main_menu'})
 stg_act1 = Stage('act1', 'Act 1', [
 	{'speaker':actors['Nikeen_Patel'], 'dialog':'Lorem ipsum dolor sit amet, sea ei ridens signiferumque, vel no graece altera viderer. Has diam nibh no. Pro in noster probatus eleifend, saepe graecis corpora quo ei. Debitis definitiones quo ad, tollit eirmod patrioque ad vim, dico dolore assentior ut mel. Vel epicurei intellegam ex. Cum probatus theophrastus an, per id tota virtute.', 'location': loc_queens},
 	{'speaker':actors['James_Wills'], 'dialog':'Dico quando invidunt ei sit. Et bonorum delicata cum, per falli praesent explicari ea. Usu et tale error dissentiet, cum an laboramus aliquando repudiandae. Munere eloquentiam disputationi in vix. Tota salutandi rationibus eu pro, ius no persius menandri. Eam ut purto case instructior, decore periculis reprehendunt mei in, ea dicat cotidieque cum.', 'location': loc_queens},

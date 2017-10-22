@@ -5,8 +5,8 @@ book_item = Item('Book', 'an old book', 'This is a very old looking book.')
 gun_item = Item('Gun', 'a shiny gun', 'This is a very reliable weapon.')
 
 #Characters
-char_narrator = Actor('narrator_tag', 'yellow', "Narrator")
-example_guy = Actor('sec_char_tag','orange','Mr Hodge Hodgeson')
+char_narrator = Actor('narrator_tag', '#D3D3D3', "Narrator")
+example_guy = Actor('sec_char_tag','#C1CDCD','Mr Hodge Hodgeson')
 
 
 #Create the locations
@@ -23,7 +23,7 @@ loc_triad = Location('triad', 'Wu\'s Won Now Casino & Noodle Bar', 'triad.bmp', 
 
 #Stages
 
-stg_main_menu = Stage('main_menu', 'Main Menu', [{'speaker':char_narrator, 'dialog':(draw_ascii('welcome.txt') + '\n\n\n\n\n' + 'Welcome  Krill'), 'location': loc_menu}], {'start': 'act1', 'exit':'main_menu'})
+stg_main_menu = Stage('main_menu', 'Main Menu', [{'speaker':char_narrator, 'dialog':(draw_ascii('./assets/welcome.txt') + '\n\n\n\n\n' + 'Welcome  Krill'), 'location': loc_menu}], {'start': 'act1', 'exit':'main_menu'})
 stg_act1 = Stage('act1', 'Act 1', [
 	{'speaker':char_narrator, 'dialog':'Lorem ipsum dolor sit amet, sea ei ridens signiferumque, vel no graece altera viderer. Has diam nibh no. Pro in noster probatus eleifend, saepe graecis corpora quo ei. Debitis definitiones quo ad, tollit eirmod patrioque ad vim, dico dolore assentior ut mel. Vel epicurei intellegam ex. Cum probatus theophrastus an, per id tota virtute.', 'location': loc_queens},
 	{'speaker':example_guy, 'dialog':'Dico quando invidunt ei sit. Et bonorum delicata cum, per falli praesent explicari ea. Usu et tale error dissentiet, cum an laboramus aliquando repudiandae. Munere eloquentiam disputationi in vix. Tota salutandi rationibus eu pro, ius no persius menandri. Eam ut purto case instructior, decore periculis reprehendunt mei in, ea dicat cotidieque cum.', 'location': loc_queens},

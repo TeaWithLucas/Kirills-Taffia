@@ -12,7 +12,7 @@ class gui():
 		print('initialisng gui')
 		self.running = True
 		self.title = title
-		self.player = Actor('kirril_tag', 'yellow','Kirill',[])
+		self.player = Actor('kirril_tag', '#00CED1','Kirill',[])
 		self.user_input = ""
 		#self.current_stage = stg_start
 		waittime = 1500
@@ -45,7 +45,7 @@ class gui():
 		frame_left = Frame(frame)
 		frame_left.pack( side = LEFT, fill=X)
 
-		stat_widget = Text(frame_left, bg = '#262820', fg = 'green', height = 15, width = 25)
+		stat_widget = Text(frame_left, bg = '#262820', fg = 'lightgreen', height = 15, width = 25)
 		hp_widget = Label(stat_widget, text='<helth>', bg = 'black', fg = 'red', font = (20), width = 25)
 		inv_widget = Text(frame_left, bg = '#262820',fg = 'white', height = 15, width = 25)
 
@@ -56,8 +56,8 @@ class gui():
 		frame_middle = Frame(frame)
 		frame_middle.pack( side = LEFT, fill=X)
 
-		narration_widget = Text(frame_middle, bg = 'black', fg = 'yellow', padx = 20, pady = 20)
-		choice_widget = Text(frame_middle, bg = 'black', fg = 'yellow', height = 10, width = 85)
+		narration_widget = Text(frame_middle, bg = 'black', fg = '#D3D3D3', padx = 20, pady = 20)
+		choice_widget = Text(frame_middle, bg = 'black', fg = '#D3D3D3', height = 10, width = 85)
 		console_widget = Entry(frame_middle, bg = 'black', fg = 'white', width = 75)
 		narration_widget.grid(row = 1, column = 1)
 		choice_widget.grid(row = 2, column = 1)
@@ -250,6 +250,5 @@ class gui():
 def init():
 	window = gui('Taffi Warz')
 	window.main.mainloop()
-
 
 init()

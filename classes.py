@@ -28,12 +28,12 @@ class Actor():
 
 """The room class. Rooms will for maps which will be assigned to levels. The rooms will determine the story. """
 
-class Room():
-	def __init__(self, name, des, exits, items):
+class Location():
+	def __init__(self, locname, name, image = "", desc = ""):
+		self.locname = locname
 		self.name = name
-		self.description = des
-		self.exits = exits
-		self.items = items
+		self.image = image
+		self.description = desc
 
 class Stage():
 	def __init__(self, stage_id, name, narration, choices):

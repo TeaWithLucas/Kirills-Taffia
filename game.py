@@ -23,7 +23,8 @@ class gui():
 		main.title(self.title)
 
 		bg_image = PIL.ImageTk.PhotoImage(PIL.Image.open("./assets/back.jpg"))
-		map_sprite = PhotoImage(file = "map.png")
+		map_sprite = PIL.ImageTk.PhotoImage(PIL.Image.open("./assets/map.bmp"))
+		loc_sprite = PIL.ImageTk.PhotoImage(PIL.Image.open("./assets/queens.bmp"))
 
 		#window background
 		frame = Label(main, image = bg_image)
@@ -56,11 +57,13 @@ class gui():
 
 		map_widget = Label(frame_right,  image = map_sprite)
 		map_widget.grid(row = 1, column = 1)
+		loc_widget = Label(frame_right,  image = loc_sprite)
+		loc_widget.grid(row = 2, column = 1)
 		
 
 		frame.image = bg_image
 		map_widget.image = map_sprite
-		
+		loc_widget.image = loc_sprite
 
 		inv_widget.config(state = DISABLED)
 		choice_widget.config(state = DISABLED)
@@ -68,7 +71,7 @@ class gui():
 		stat_widget.config(state = DISABLED)
 		hp_widget.config(state = DISABLED)
 
-		self.locations = {
+		self.widgets = {
 			'frame' : frame,
 			'console' : console_widget,
 			'map' : map_widget,
@@ -77,6 +80,7 @@ class gui():
 			'hp' : hp_widget,
 			'narration' : narration_widget,
 			'choice' : choice_widget
+			
 		}
 
 		console_widget.bind('<Return>', self.rtn_pressed)
@@ -182,23 +186,23 @@ class gui():
 	#Update GUI widgets
 
 	def update_txt(self, location, input):
-		self.locations[location].config(state = NORMAL)
-		self.locations[location].delete(1.0, END)
-		self.locations[location].insert(END, input)
-		self.locations[location].config(state = DISABLED)
+		self.widgets[location].config(state = NORMAL)
+		self.widgets[location].delete(1.0, END)
+		self.widgets[location].insert(END, input)
+		self.widgets[location].config(state = DISABLED)
 
 	def add_txt(self, location, input):
-		self.locations[location].config(state = NORMAL)
-		self.locations[location].insert(END, input)
-		self.locations[location].config(state = DISABLED)
+		self.widgets[location].config(state = NORMAL)
+		self.widgets[location].insert(END, input)
+		self.widgets[location].config(state = DISABLED)
 
 	def get_txt(self, location):
-		return self.locations[location].get(1.0, END)
+		return self.widgets[location].get(1.0, END)
 
 	def get_input(self):
-		con_input = self.locations['console'].get()
+		con_input = self.widgets['console'].get()
 		norm_input = normalise(con_input, self.current_stage.choicesinput)
-		self.locations['console'].delete(0, END)
+		self.widgets['console'].delete(0, END)
 		return norm_input
 		
 

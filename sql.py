@@ -27,3 +27,8 @@ def insert_records(stringSQL, stringData):
 	data = stringData
 	cursor.execute(query, data)
 	conn.commit()
+
+
+#stringSQL = "SELECT * FROM tblCharacters"
+#actorsdata = fetch_all(stringSQL)
+#print(actorsdata)

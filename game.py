@@ -12,12 +12,14 @@ class gui():
 		print('initialisng gui')
 		self.running = True
 		self.title = title
-		self.player = Actor('kirril_tag', '#00CED1','Kirill',[])
+		#self.player = Actor('kirril_tag', '#00CED1','Kirill',[])
+		self.player = actors['Kirill_Sidorov']
+		self.narrator = actors['Nikeen_Patel']
 		self.user_input = ""
 		#self.current_stage = stg_start
 		waittime = 1500
 		start_stage = stg_main_menu
-		self.stage_man = Stage_Manager(self,stages,start_stage,char_narrator, waittime)
+		self.stage_man = Stage_Manager(self,stages,start_stage,self.narrator, waittime)
 		self.cur_health_symbols = "<health>"
 		self.cur_loc = "<location>"
 		self.narration_speed = 0.01

@@ -2,11 +2,7 @@ import time
 from functions import *
 from tkinter import *
 
-
-
 """ These are the classes which are the structures for different objects in the game """
-
-
 class Actor():
 	def __init__(self,tag,speech_color, name='Blank_name', inv=[]):
 		self.speech_color = speech_color
@@ -20,6 +16,25 @@ class Actor():
 		}
 
 		self.stats['special'] = {'str':1, 'per':1, 'end':1, 'cha':1, 'int':1, 'agi':1, 'luc':1}
+		self.calc_stats()
+
+	def __init__(self, data):
+		#self.speech_color = data['CharID']: 1
+		self.fname = data['CharFname']
+		self.lname = data['CharLname']
+		self.name = self.fname + " " + self.lname
+		self.id = self.fname + "_" + self.lname
+		self.nickname = data['CharNickname']
+		self.location = data['CharLoc']
+		self.function = data['CharFunc']
+		self.stats = {
+			'special': {'str':int(data['CharSTR']), 'per':int(data['CharPER']), 'end':int(data['CharEND']), 'cha':int(data['CharCHA']), 'int':int(data['CharINT']), 'agi':int(data['CharAGI']), 'luc':int(data['CharLUC'])},
+			'health': {'curh':0, 'maxh':0},
+			'level': {'exp':int(data['CharXP']),'lvl':int(data['CharLevel']),'nxt_lvl':0, 'nxt_exp':0}
+		}
+		self.tag = self.id
+		self.speech_color = data['CharCOL']
+		self.inv = []
 		self.calc_stats()
 
 	def calc_stats(self):
@@ -112,9 +127,9 @@ class Stage_Manager():
 
 	def change_location(self, new_location):
 		if self.current_location != new_location:
-			self.gui_obj.add_txt('narration', '\n\n' + new_location.description, self.narrator.tag, self.narrator.speech_color)
 			self.gui_obj.change_image('loc_img', './assets/' + new_location.image)
 			self.gui_obj.update_label('loc_desc', new_location.name)
+			self.gui_obj.add_txt('narration', '\n\n' + new_location.description, self.narrator.tag, self.narrator.speech_color)
 			#self.gui_obj.cur_loc = new_location.name
 			self.current_location = new_location
 			return False

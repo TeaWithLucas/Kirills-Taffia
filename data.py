@@ -1,12 +1,26 @@
 from classes import *
+import sql
+
+
+def call_actors():
+	stringSQL = "SELECT * FROM tblCharacters"
+	actorsdata = sql.fetch_all(stringSQL)
+	actors = {}
+	for actordata in actorsdata:
+		actor = Actor(actordata)
+		actors[actor.id] = actor
+		print ("creating: " + actor.id)
+	return actors
+
+actors = call_actors()
 
 #Items
 book_item = Item('Book', 'an old book', 'This is a very old looking book.')
 gun_item = Item('Gun', 'a shiny gun', 'This is a very reliable weapon.')
 
 #Characters
-char_narrator = Actor('narrator_tag', '#D3D3D3', "Narrator")
-example_guy = Actor('sec_char_tag','#C1CDCD','Mr Hodge Hodgeson')
+#char_narrator = Actor('narrator_tag', '#D3D3D3', "Narrator")
+#example_guy = Actor('sec_char_tag','#C1CDCD','Mr Hodge Hodgeson')
 
 
 #Create the locations
@@ -19,24 +33,22 @@ loc_park = Location('park', 'Cathays Park', 'park.bmp', 'Before you is a busy ca
 loc_queens = Location('queens', 'Queens Buildings', 'queens.bmp', 'Before you is a busy cafe. The barista is strugling to keep up with the work load and looks at you desperately as you walk in.')
 loc_taf = Location('taf', 'The Taf Pubqueens', 'taf.bmp', 'Before you is a busy cafe. The barista is strugling to keep up with the work load and looks at you desperately as you walk in.')
 loc_triad = Location('triad', 'Wu\'s Won Now Casino & Noodle Bar', 'triad.bmp', 'Before you is a busy cafe. The barista is strugling to keep up with the work load and looks at you desperately as you walk in.')
-
-
 #Stages
 
-stg_main_menu = Stage('main_menu', 'Main Menu', [{'speaker':char_narrator, 'dialog':(draw_ascii('./assets/welcome.txt') + '\n\n\n\n\n' + 'Welcome  Krill'), 'location': loc_menu}], {'start': 'act1', 'exit':'main_menu'})
+stg_main_menu = Stage('main_menu', 'Main Menu', [{'speaker':actors['Nikeen_Patel'], 'dialog':(draw_ascii('./assets/welcome.txt') + '\n\n\n\n\n' + 'Welcome  Krill'), 'location': loc_menu}], {'start': 'act1', 'exit':'main_menu'})
 stg_act1 = Stage('act1', 'Act 1', [
-	{'speaker':char_narrator, 'dialog':'Lorem ipsum dolor sit amet, sea ei ridens signiferumque, vel no graece altera viderer. Has diam nibh no. Pro in noster probatus eleifend, saepe graecis corpora quo ei. Debitis definitiones quo ad, tollit eirmod patrioque ad vim, dico dolore assentior ut mel. Vel epicurei intellegam ex. Cum probatus theophrastus an, per id tota virtute.', 'location': loc_queens},
-	{'speaker':example_guy, 'dialog':'Dico quando invidunt ei sit. Et bonorum delicata cum, per falli praesent explicari ea. Usu et tale error dissentiet, cum an laboramus aliquando repudiandae. Munere eloquentiam disputationi in vix. Tota salutandi rationibus eu pro, ius no persius menandri. Eam ut purto case instructior, decore periculis reprehendunt mei in, ea dicat cotidieque cum.', 'location': loc_queens},
-	{'speaker':char_narrator, 'dialog':'Indoctum ocurreret cu duo, propriae deseruisse philosophia in est. Nam id tale timeam alienum, purto elaboraret qui no. At vim ferri labitur ceteros, nam eu dictas recteque intellegebat. Vis ea amet sumo, pro ex tacimates repudiare consetetur, id eos legimus omittam referrentur. Ne sea ludus voluptaria rationibus. Ad oratio consulatu aliquando ius, duo legere probatus et.', 'location': loc_home},
-	{'speaker':example_guy, 'dialog':'Nisl postulant ne eos. Ut eos vide dolor urbanitas, ipsum legere instructior no eam. Quo eu affert recusabo partiendo, his ne accusam probatus facilisi. Soleat forensibus definiebas ex vix.', 'location': loc_queens},
-	{'speaker':char_narrator, 'dialog':'Porro graeco semper ei quo, per iudico percipit ut. Exerci luptatum elaboraret mel ex, no sed debet commodo dolores. Erat liber tantas at vis. Ut possit prompta feugiat nec, summo interesset an his, debitis probatus convenire id vix. Nobis dissentiunt sed ei, cum at impetus viderer definiebas. Ius cu nominavi mediocrem, an mel iriure dolorum, et veritus inciderint ius. Ad case virtute eleifend est.', 'location': loc_home},
-	{'speaker':example_guy, 'dialog':'Id eum dicunt ullamcorper, ne sea enim appareat. Omnium repudiare eu ius. Vero dicit sea te, mea ad iuvaret sensibus. Ex vis doming commodo theophrastus, prima civibus laboramus his cu. Ius ea soluta mollis erroribus, modus novum eu has.', 'location': loc_queens}
+	{'speaker':actors['Nikeen_Patel'], 'dialog':'Lorem ipsum dolor sit amet, sea ei ridens signiferumque, vel no graece altera viderer. Has diam nibh no. Pro in noster probatus eleifend, saepe graecis corpora quo ei. Debitis definitiones quo ad, tollit eirmod patrioque ad vim, dico dolore assentior ut mel. Vel epicurei intellegam ex. Cum probatus theophrastus an, per id tota virtute.', 'location': loc_queens},
+	{'speaker':actors['James_Wills'], 'dialog':'Dico quando invidunt ei sit. Et bonorum delicata cum, per falli praesent explicari ea. Usu et tale error dissentiet, cum an laboramus aliquando repudiandae. Munere eloquentiam disputationi in vix. Tota salutandi rationibus eu pro, ius no persius menandri. Eam ut purto case instructior, decore periculis reprehendunt mei in, ea dicat cotidieque cum.', 'location': loc_queens},
+	{'speaker':actors['Bai _Hu'], 'dialog':'Indoctum ocurreret cu duo, propriae deseruisse philosophia in est. Nam id tale timeam alienum, purto elaboraret qui no. At vim ferri labitur ceteros, nam eu dictas recteque intellegebat. Vis ea amet sumo, pro ex tacimates repudiare consetetur, id eos legimus omittam referrentur. Ne sea ludus voluptaria rationibus. Ad oratio consulatu aliquando ius, duo legere probatus et.', 'location': loc_home},
+	{'speaker':actors['Kirill_Sidorov'], 'dialog':'Nisl postulant ne eos. Ut eos vide dolor urbanitas, ipsum legere instructior no eam. Quo eu affert recusabo partiendo, his ne accusam probatus facilisi. Soleat forensibus definiebas ex vix.', 'location': loc_queens},
+	{'speaker':actors['Nikeen_Patel'], 'dialog':'Porro graeco semper ei quo, per iudico percipit ut. Exerci luptatum elaboraret mel ex, no sed debet commodo dolores. Erat liber tantas at vis. Ut possit prompta feugiat nec, summo interesset an his, debitis probatus convenire id vix. Nobis dissentiunt sed ei, cum at impetus viderer definiebas. Ius cu nominavi mediocrem, an mel iriure dolorum, et veritus inciderint ius. Ad case virtute eleifend est.', 'location': loc_home},
+	{'speaker':actors['William_Davies'], 'dialog':'Id eum dicunt ullamcorper, ne sea enim appareat. Omnium repudiare eu ius. Vero dicit sea te, mea ad iuvaret sensibus. Ex vis doming commodo theophrastus, prima civibus laboramus his cu. Ius ea soluta mollis erroribus, modus novum eu has.', 'location': loc_queens}
 	],  {'menu': 'main_menu', 'replay':'act1'})
-stg_other_menu = Stage('other menu', 'other menu', [{'speaker':char_narrator, 'dialog':'Welcome  Krill', 'location': loc_queens}],  {'start': 'act1', 'exit':'main_menu'})
-stg_new_game = Stage('new game', 'new game', [{'speaker':example_guy, 'dialog':'Welcome  Krill', 'location': loc_queens}],  {'start': 'act1', 'exit':'main_menu'})
-stg_load_game = Stage('load game', 'load game', [{'speaker':char_narrator, 'dialog':'Welcome  Krill', 'location': loc_queens}],  {'start': 'act1', 'exit':'main_menu'})
-stg_exit = Stage('exit', 'Exiting', [{'speaker':example_guy, 'dialog':'Welcome  Krill', 'location': loc_queens}],  {'start': 'act1', 'exit':'main_menu'})
-stg_lost = Stage('lost', 'You Loose', [{'speaker':char_narrator, 'dialog':'You lost', 'location': loc_menu}],  {'start': 'act1', 'exit':'main_menu'})
+stg_other_menu = Stage('other menu', 'other menu', [{'speaker':actors['Nikeen_Patel'], 'dialog':'Welcome  Krill', 'location': loc_queens}],  {'start': 'act1', 'exit':'main_menu'})
+stg_new_game = Stage('new game', 'new game', [{'speaker':actors['Nikeen_Patel'], 'dialog':'Welcome  Krill', 'location': loc_queens}],  {'start': 'act1', 'exit':'main_menu'})
+stg_load_game = Stage('load game', 'load game', [{'speaker':actors['Nikeen_Patel'], 'dialog':'Welcome  Krill', 'location': loc_queens}],  {'start': 'act1', 'exit':'main_menu'})
+stg_exit = Stage('exit', 'Exiting', [{'speaker':actors['Nikeen_Patel'], 'dialog':'Welcome  Krill', 'location': loc_queens}],  {'start': 'act1', 'exit':'main_menu'})
+stg_lost = Stage('lost', 'You Loose', [{'speaker':actors['Nikeen_Patel'], 'dialog':'You lost', 'location': loc_menu}],  {'start': 'act1', 'exit':'main_menu'})
 
 stages = [stg_main_menu, stg_act1, stg_other_menu, stg_new_game, stg_load_game, stg_exit, stg_lost]
 

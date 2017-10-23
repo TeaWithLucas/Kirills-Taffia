@@ -3,6 +3,7 @@ from time import sleep
 import os
 import re
 import string
+import decimal
 
 #Displaying ASCII drawing
 def draw_ascii(path):

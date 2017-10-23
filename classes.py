@@ -20,7 +20,7 @@ class Actor():
 			'health': {'curh':0, 'maxh':0},
 			'level': {'exp':int(data['CharXP']),'lvl':int(data['CharLevel']),'nxt_lvl':0, 'nxt_exp':0}
 		}
-		self.speech_color = data['CharCOL'].strip()
+		self.wallet = int(data['CharWallet'])
 		self.tag = self.id
 		#self.tags = {'foreground':data['CharCOL'].strip()}
 		self.tags = json.loads(data['CharTags'])
@@ -77,6 +77,7 @@ class Stage_Manager():
 		self.remaining_narration = self.current_stage.narration
 		self.current_location = []
 		self.narrator = narrator
+		self.linebar = '________________________________________________________________\n'
 
 
 	#Will play out the current stage
@@ -117,8 +118,7 @@ class Stage_Manager():
 		if self.current_location != new_location:
 			self.gui_obj.change_image('loc_img', './assets/' + new_location.image)
 			self.gui_obj.update_label('loc_desc', new_location.name)
-			self.gui_obj.add_txt('narration', new_location.description + '\n\n', self.narrator.tag)
-			self.gui_obj.add_txt('narration', '_____________________________________________________________________\n\n', self.narrator.tag)
+			self.gui_obj.add_txt('narration', self.linebar + new_location.description + '\n' + self.linebar, self.narrator.tag)
 			#self.gui_obj.cur_loc = new_location.name
 			self.current_location = new_location
 			return False

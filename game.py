@@ -42,18 +42,28 @@ class gui():
 		background.place(x=0, y=0, relwidth=1, relheight=1)
 
 		#creating each widget
-		frame_left = Frame(frame)
+		frame_left = Frame(frame, background = 'black')
 		frame_left.pack( side = LEFT, fill=X)
 
-		stat_widget = Text(frame_left, bg = '#262820', fg = 'lightgreen', height = 15, width = 25)
-		hp_widget = Label(stat_widget, text='<helth>', bg = 'black', fg = 'red', font = (20), width = 25)
+		stat_desc_widget = Label(frame_left, text="Stats", bg = 'black', fg = 'White', font = (16), width = 25)
+		stat_widget = Text(frame_left, bg = '#262820', fg = 'lightgreen', height = 10, width = 25)
+		hp_desc_widget = Label(frame_left, text="HP:", bg = 'black', fg = 'White', font = (16), width = 5)
+		hp_widget = Label(frame_left, text='<health>', bg = 'black', fg = 'red', font = (20), width = 15)
+		wallet_desc_widget = Label(frame_left, text="Wallet:", bg = 'black', fg = 'White', font = (16), width = 5)
+		wallet_widget = Label(frame_left, text='<wallet>', bg = 'black', fg = 'red', font = (20), width = 15)
+		inv_desc_widget = Label(frame_left, text="Inventory", bg = 'black', fg = 'White', font = (16), width = 25)
 		inv_widget = Text(frame_left, bg = '#262820',fg = 'white', height = 15, width = 25)
 
-		stat_widget.grid(row = 1, column = 1)
-		hp_widget.place(x=0, y=0, relwidth =1, relheight = 0.1)
-		inv_widget.grid(row = 2, column = 1)
+		stat_desc_widget.grid(row = 1, column = 1, columnspan=2)
+		stat_widget.grid(row = 2, column = 1, columnspan=2)
+		hp_desc_widget.grid(row = 3, column = 1)
+		hp_widget.grid(row = 3, column = 2)
+		wallet_desc_widget.grid(row = 4, column = 1)
+		wallet_widget.grid(row = 4, column = 2)
+		inv_desc_widget.grid(row = 5, column = 1, columnspan=2)
+		inv_widget.grid(row = 6, column = 1, columnspan=2)
 
-		frame_middle = Frame(frame)
+		frame_middle = Frame(frame, background = 'black')
 		frame_middle.pack( side = LEFT, fill=X)
 
 		narration_widget = Text(frame_middle, bg = 'black', fg = '#D3D3D3', padx = 20, pady = 20, wrap = WORD)
@@ -63,7 +73,7 @@ class gui():
 		choice_widget.grid(row = 2, column = 1)
 		console_widget.grid(row = 3, column = 1)
 
-		frame_right = Frame(frame, bg = 'black')
+		frame_right = Frame(frame, background = 'black')
 		frame_right.pack( side = LEFT, fill=X)
 
 		map_desc_widget = Label(frame_right, text="Map", bg = 'black', fg = 'White', font = (16))
@@ -98,6 +108,7 @@ class gui():
 			#'items' : items_widget,
 			'stats' : stat_widget,
 			'hp' : hp_widget,
+			'wallet' : wallet_widget,
 			'narration' : narration_widget,
 			'choice' : choice_widget
 
@@ -197,7 +208,6 @@ class gui():
 	def update_stat_display(self):
 
 		update_txt = ""
-		update_txt += '\t[STATISTICS]\n\n'
 		for desc, amount in self.player.stats['special'].items():
 			num_spaces = 13 - (len(desc) + 2)
 			spaces = ''
@@ -233,9 +243,24 @@ class gui():
 		self.update_label('hp', symbols)
 		#self.cur_health_symbols = symbols
 
+	def update_wallet(self):
+		global bitcoin_values
+		player_wallet = self.player.wallet
+		best_symb = ""
+		best_val = 100000000000000000000.00
+		cur_val = 0.00
+		for currency in bitcoin_values:
+			cur_val = float(player_wallet/currency['value'])
+			if cur_val < best_val and cur_val > 0.10:
+				best_val = cur_val
+				best_symb = currency['symbol']
+
+		
+		self.update_label('wallet', str(best_val) + " " + str(best_symb))
+		#self.cur_health_symbols = symbols
+
 	def update_inv_display(self):
 		update_txt = ""
-		update_txt += '\t[INVENTORY]\n\n'
 		for item in self.player.inv:
 			update_txt += '  ---  ' + item.itemid + '\n'
 		self.update_txt('inv', update_txt)
@@ -255,6 +280,7 @@ class gui():
 		self.update_stat_display()
 		self.update_inv_display()
 		self.update_hp_bar()
+		self.update_wallet()
 
 	def clear_middle(self):
 		print('clearing narration and choice widgets')

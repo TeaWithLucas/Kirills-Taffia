@@ -1,6 +1,7 @@
 from classes import *
 import sql
 
+bitcoin_values = [{'name':'bitcoin', 'value':10**8, 'symbol':'₿'}, {'name':'milli', 'value':10**5, 'symbol':'m₿'}, {'name':'micro', 'value':10**2, 'symbol':'µ₿'}, {'name':'nano', 'value':1, 'symbol':'n₿'}]
 
 def call_actors():
 	stringSQL = "SELECT * FROM tblCharacters"

@@ -28,7 +28,11 @@ def insert_records(stringSQL, stringData):
 	cursor.execute(query, data)
 	conn.commit()
 
-
+#testing area
 #stringSQL = "SELECT * FROM tblCharacters"
 #actorsdata = fetch_all(stringSQL)
 #print(actorsdata)
+#for actor in actorsdata:
+#	print(json.loads(actor['CharTags']))
+#diction = {'lmargin1':1,'lmargin2':1,'rmargin':1,'foreground':'#24d075','justify':'RIGHT','spacing1':1,'spacing3':1,'font':'Arial'}
+#print(json.dumps(diction))

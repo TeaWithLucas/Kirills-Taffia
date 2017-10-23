@@ -13,14 +13,11 @@ class gui():
 		print('initialisng gui')
 		self.running = True
 		self.title = title
-		#self.player = Actor('kirril_tag', '#00CED1','Kirill',[])
 		self.player = actors['Kirill_Sidorov']
 		self.narrator = actors['Nikeen_Patel']
 		self.user_input = ""
-		#self.current_stage = stg_start
-		waittime = 1500
 		start_stage = stg_main_menu
-		self.stage_man = Stage_Manager(self,stages,start_stage,self.narrator, waittime)
+		self.stage_man = Stage_Manager(self,stages,start_stage,self.narrator)
 		self.cur_health_symbols = "<health>"
 		self.cur_loc = "<location>"
 		self.narration_speed = 0.01
@@ -110,7 +107,7 @@ class gui():
 
 		#Set focus on the console
 		console_widget.focus_set()
-
+		self.setup_tags(actors)
 
 		#Start
 		self.navigate()
@@ -138,6 +135,16 @@ class gui():
 
 	#Update GUI widgets
 
+	def setup_tags(self, actors):
+		for actor in actors.values():
+			print(actor.tags)
+			self.widgets['narration'].tag_config(actor.tag, actor.tags)
+			self.widgets['choice'].tag_config(actor.tag, actor.tags)
+
+	def add_tag(self, tag, **kw):
+		self.widgets['narration'].tag_config(tag, kw)
+		self.widgets['choice'].tag_config(tag, kw)
+
 	def update_txt(self, widget, inputstr):
 		self.widgets[widget].config(state = NORMAL)
 		self.widgets[widget].delete(1.0, END)
@@ -149,40 +156,24 @@ class gui():
 		#self.widgets[widget].text = inputstr
 
 
-	def add_txt(self, widget, inputstr, tag, color):
+	def add_txt(self, widget, inputstr, tag):
 		self.widgets[widget].config(state = NORMAL)
 		self.widgets['console'].config(state = DISABLED)
 		print(tag)
-		if tag == 'center_tag':
-			for l in inputstr:
-				self.widgets[widget].insert(END, l , tag)
-				self.widgets[widget].tag_config(tag, foreground = color, justify = CENTER)
-				self.widgets[widget].see(END)
-				time.sleep(self.narration_speed)
-				self.main.update()
-		elif not(tag == 'Nikeen_Patel' or  tag == 'Kirill_Sidorov'):
-			for l in inputstr:
-				self.widgets[widget].insert(END, l , tag)
-				self.widgets[widget].tag_config(tag, foreground = color, justify = RIGHT)
-				self.widgets[widget].see(END)
-				time.sleep(self.narration_speed)
-				self.main.update()
-		else:
-			for l in inputstr:
-				self.widgets[widget].insert(END, l , tag)
-				self.widgets[widget].tag_config(tag, foreground = color)
-				self.widgets[widget].see(END)
-				time.sleep(self.narration_speed)
-				self.main.update()
-		if tag == 'on_drugs':
-			color_list = ['red','blue','green','lightreen','yellow','pink','white','gray']
-			direction_list = [LEFT, RIGHT, CENTER]
-			for l in inputstr:
-				self.widgets[widget].insert(END, l , tag)
-				self.widgets[widget].tag_config(tag, foreground = secrets.choice(color_list), justify = secrets.choice(direction_list))
-				self.widgets[widget].see(END)
-				time.sleep(self.narration_speed)
-				self.main.update()
+		for l in inputstr:
+			self.widgets[widget].insert(END, l , tag)
+			self.widgets[widget].see(END)
+			time.sleep(self.narration_speed)
+			self.main.update()
+		#if tag == 'on_drugs':
+		#	color_list = ['red','blue','green','lightreen','yellow','pink','white','gray']
+		#	direction_list = [LEFT, RIGHT, CENTER]
+		#	for l in inputstr:
+		#		self.widgets[widget].insert(END, l , tag)
+		#		self.widgets[widget].tag_config(tag, foreground = secrets.choice(color_list), justify = secrets.choice(direction_list))
+		#		self.widgets[widget].see(END)
+		#		time.sleep(self.narration_speed)
+		#		self.main.update()
 		time.sleep(self.waittime)
 		self.widgets['console'].config(state = NORMAL)
 		self.widgets[widget].config(state = DISABLED)
@@ -257,7 +248,7 @@ class gui():
 
 	def update_choices(self):
 		for choice in self.current_stage.choices:
-			self.add_txt('choice', "\t\t\t\t" + choice + "\n", self.player.tag, self.player.speech_color)
+			self.add_txt('choice', "\t\t\t\t" + choice + "\n", self.player.tag)
 
 	def refresh(self):
 		print('refreshing windows')

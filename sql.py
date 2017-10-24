@@ -17,10 +17,13 @@ except mysql.connector.Error as err:
 #THIS METHOD FETCHES ALL ROWS IN A DATABASE TABLE AND SEPERATES EACH ROW INTO A LIST OF DICTIONARIES.
 #
 def fetch_all(stringSQL):
-	query = stringSQL
-	cursor.execute(query)
-	rows = cursor.fetchall()
-	return rows
+	try:
+		query = stringSQL
+		cursor.execute(query)
+		rows = cursor.fetchall()
+		return rows
+	except:
+		print("Error fetching records - Please check your internet connection")
 
 def insert_records(stringSQL, stringData):
 	query = stringSQL

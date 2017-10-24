@@ -1,7 +1,6 @@
 
 """ THIS IS THE MAIN GAME CLASS IT CONTAINS THE MAIN GAME LOOP AND LOGIC ASWELL AS MENU FUNCTIONS"""
-from classes import *
-from functions import *
+from stages import *
 from data import *
 import PIL.Image
 import PIL.ImageTk
@@ -293,7 +292,7 @@ class gui():
 		self.widgets[widget].image = new_image
 
 def init():
-	window = gui('Taffi Warz')
+	window = gui(game_title)
 	window.main.mainloop()
 
 init()

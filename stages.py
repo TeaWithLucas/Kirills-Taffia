@@ -2,7 +2,7 @@ from classes import *
 
 """The Stage Manager allows to easily change stages, take inputs and display all the outputs"""
 class Stage_Manager():
-	def __init__(self, gui_obj, all_stages, start_stage, narrator):
+	def __init__(self, gui_obj, all_stages, start_stage, narrator, system_text):
 		self.all_stages = all_stages
 		self.gui_obj = gui_obj
 		self.current_stage = start_stage
@@ -10,7 +10,8 @@ class Stage_Manager():
 		self.remaining_narration = self.current_stage.narration
 		self.current_location = []
 		self.narrator = narrator
-		self.linebar = '__________________________________________________________\n'
+		self.system_text = system_text
+		self.linebar = '____________________________________________________\n'
 
 
 	#Will play out the current stage
@@ -19,7 +20,7 @@ class Stage_Manager():
 			print(self.change_location(narration['location']))
 			if self.change_location(narration['location']):
 				if narration['speaker'] == self.narrator:
-					self.gui_obj.add_txt('narration', narration['dialog'] + '\n\n', narration['speaker'].tag)
+					self.gui_obj.add_txt('narration', narration['dialog'] + '\n\n', self.system_text.tag)
 				else:
 					self.gui_obj.add_txt('narration', narration['speaker'].name + ': ' + narration['dialog'] + '\n\n', narration['speaker'].tag)
 					#self.gui_obj.add_txt('narration', '_____________________________________________________________________\n\n', 'center_tag', '#FFFACD')
@@ -29,7 +30,7 @@ class Stage_Manager():
 	def update_choices(self):
 		for choice in self.current_stage.choices:
 			print('c = ' + choice)
-			self.gui_obj.add_txt('choice', '[' + choice.upper() + ']    \n\n', 'center_tag')
+			self.gui_obj.add_txt('choice', '[' + choice.upper() + ']    \n\n', self.narrator.tag)
 
 
 	def take_input(self, input):

@@ -14,9 +14,10 @@ class gui():
 		self.title = title
 		self.player = actors['Kirill_Sidorov']
 		self.narrator = actors['Nikeen_Patel']
+		self.system_text = actors['Dmytro_Kaduba']
 		self.user_input = ""
 		start_stage = stg_main_menu
-		self.stage_man = Stage_Manager(self,stages,start_stage,self.narrator)
+		self.stage_man = Stage_Manager(self,stages,start_stage,self.narrator,self.system_text)
 		self.cur_health_symbols = "<health>"
 		self.cur_loc = "<location>"
 		self.narration_speed = 0.01
@@ -254,7 +255,7 @@ class gui():
 				best_val = cur_val
 				best_symb = currency['symbol']
 
-		
+
 		self.update_label('wallet', str(best_val) + " " + str(best_symb))
 		#self.cur_health_symbols = symbols
 

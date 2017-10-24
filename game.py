@@ -12,14 +12,22 @@ class gui():
 		print('initialisng gui')
 		self.running = True
 		self.title = title
-		self.player = actors['Kirill_Sidorov']
-		self.narrator = actors['Nikeen_Patel']
-		self.system_text = actors['Dmytro_Kaduba']
+		self.player = actors['Kirill_Sidorov'] #The protagonist actor object
+		self.narrator = actors['Nikeen_Patel'] #The narrato actor
+		self.system_text = actors['Dmytro_Kaduba'] #System text display actor
+
+		#User input (global)
 		self.user_input = ""
+
+		#Stage manager to navigate through the game
 		start_stage = stg_main_menu
 		self.stage_man = Stage_Manager(self,stages,start_stage,self.narrator,self.system_text)
+
+		#health and location initialisation
 		self.cur_health_symbols = "<health>"
 		self.cur_loc = "<location>"
+
+		#Text display speeds
 		self.narration_speed = 0.01
 		self.waittime = 0.5
 
@@ -29,6 +37,7 @@ class gui():
 		main.resizable(width = False, height = False)
 		main.title(self.title)
 
+		#Loading images from files
 		bg_image = PIL.ImageTk.PhotoImage(PIL.Image.open("./assets/back.jpg"))
 		map_sprite = PIL.ImageTk.PhotoImage(PIL.Image.open("./assets/map.bmp"))
 		loc_sprite = PIL.ImageTk.PhotoImage(PIL.Image.open("./assets/queens.bmp"))
@@ -88,15 +97,18 @@ class gui():
 		#items_widget = Text(frame_right, bg = '#262820', fg = 'white', height = 15, width = 25)
 		#items_widget.grid(row = 3, column = 1)
 
+		#Reseting images to avoid them disapearing
 		background.image = bg_image
 		map_widget.image = map_sprite
 		loc_widget.image = loc_sprite
 
+		#Disable all widgets so they become read only
 		inv_widget.config(state = DISABLED)
 		choice_widget.config(state = DISABLED)
 		narration_widget.config(state = DISABLED)
 		stat_widget.config(state = DISABLED)
 
+		#Widget dictionary for access
 		self.widgets = {
 			'background' : background,
 			'console' : console_widget,
@@ -114,6 +126,7 @@ class gui():
 
 		}
 
+		#Bind the button press to a function
 		console_widget.bind('<Return>', self.rtn_pressed)
 
 		#Set focus on the console
@@ -123,11 +136,12 @@ class gui():
 		#Start
 		self.navigate()
 
+	#Function to update consoles
 	def navigate(self):
-		self.clear_middle()
-		self.refresh()
-		self.set_title(self.stage_man.current_stage.name)
-		self.stage_man.narrate_current_stage()
+		self.clear_middle() #Clear consoles
+		self.refresh() #Update secondary consoles
+		self.set_title(self.stage_man.current_stage.name) #Set correct window title
+		self.stage_man.narrate_current_stage() #Start narration of the stage
 
 
 
@@ -138,7 +152,7 @@ class gui():
 		self.navigate()
 
 
-
+	#Game clock update
 	def update_clock(self):
 		now = time.strftime("%H:%M:%S")
 		self.label.configure(text=now)
@@ -146,36 +160,40 @@ class gui():
 
 	#Update GUI widgets
 
+	#sets the proper tags for text formating
 	def setup_tags(self, actors):
 		for actor in actors.values():
 			print(actor.tags)
 			self.widgets['narration'].tag_config(actor.tag, actor.tags)
 			self.widgets['choice'].tag_config(actor.tag, actor.tags)
 
+	#adds a tag to text
 	def add_tag(self, tag, **kw):
 		self.widgets['narration'].tag_config(tag, kw)
 		self.widgets['choice'].tag_config(tag, kw)
 
+	#Updates the text in a widget
 	def update_txt(self, widget, inputstr):
-		self.widgets[widget].config(state = NORMAL)
+		self.widgets[widget].config(state = NORMAL) # Enable/Diable widgets after use to keep them read only
 		self.widgets[widget].delete(1.0, END)
 		self.widgets[widget].insert(END, inputstr)
 		self.widgets[widget].config(state = DISABLED)
 
+	#Updates the text on a label
 	def update_label(self, widget, inputstr):
 		self.widgets[widget].configure(text=inputstr)
 		#self.widgets[widget].text = inputstr
 
-
+	#Appends text at the end of a widget
 	def add_txt(self, widget, inputstr, tag):
 		self.widgets[widget].config(state = NORMAL)
 		self.widgets['console'].config(state = DISABLED)
 		print(tag)
-		for l in inputstr:
+		for l in inputstr: #Display character by character
 			self.widgets[widget].insert(END, l , tag)
 			self.widgets[widget].see(END)
-			time.sleep(self.narration_speed)
-			self.main.update()
+			time.sleep(self.narration_speed) #Delay
+			self.main.update() #Update main window to avoid freezing
 		#if tag == 'on_drugs':
 		#	color_list = ['red','blue','green','lightreen','yellow','pink','white','gray']
 		#	direction_list = [LEFT, RIGHT, CENTER]
@@ -189,22 +207,25 @@ class gui():
 		self.widgets['console'].config(state = NORMAL)
 		self.widgets[widget].config(state = DISABLED)
 
+	#Returns the text in a widget
 	def get_txt(self, widget):
 		return self.widgets[widget].get(1.0, END)
 
+	#Get input from a widget and normalises it
 	def get_input(self):
 		con_input = self.widgets['console'].get()
 		norm_input = normalise(con_input, self.stage_man.current_stage.choicesinput)
 		self.widgets['console'].delete(0, END)
 		return norm_input
 
-
+	#Format and set the window title
 	def set_title(self, subtitle = ""):
 		if subtitle != "":
 			self.main.title(self.title + " - " + subtitle)
 		else:
 			self.main.title(self.title)
 
+	#Updates the statistics display after every cycle
 	def update_stat_display(self):
 
 		update_txt = ""
@@ -220,6 +241,7 @@ class gui():
 
 		#self.update_txt(player.name + "\n" + str(player.stats['special']))
 
+	#Updates hp bar widget after every cycle
 	def update_hp_bar(self):
 		update_txt = ""
 		player_vitals = self.player.stats['health']
@@ -243,6 +265,7 @@ class gui():
 		self.update_label('hp', symbols)
 		#self.cur_health_symbols = symbols
 
+	#Updates wallet widget after every cycle
 	def update_wallet(self):
 		global bitcoin_values
 		player_wallet = self.player.wallet
@@ -259,6 +282,7 @@ class gui():
 		self.update_label('wallet', str(best_val) + " " + str(best_symb))
 		#self.cur_health_symbols = symbols
 
+	#Updates inventory display after every cycle
 	def update_inv_display(self):
 		update_txt = ""
 		for item in self.player.inv:
@@ -271,10 +295,11 @@ class gui():
 		#	update_txt_room += ' --- ' + item.itemid + '\n'
 		#self.update_txt('items', update_txt_room)
 
-	def update_choices(self):
-		for choice in self.current_stage.choices:
-			self.add_txt('choice', "\t\t\t\t" + choice + "\n", self.player.tag)
+	#def update_choices(self):
+		#for choice in self.current_stage.choices:
+			#self.add_txt('choice', "\t\t\t\t" + choice + "\n", self.player.tag)
 
+	#Refresh displays
 	def refresh(self):
 		print('refreshing windows')
 		self.update_stat_display()
@@ -282,16 +307,19 @@ class gui():
 		self.update_hp_bar()
 		self.update_wallet()
 
+	#Clear the main input/output consoles
 	def clear_middle(self):
 		print('clearing narration and choice widgets')
 		self.update_txt('narration', "")
 		self.update_txt('choice', "")
 
+	#Change the image of a widget
 	def change_image(self, widget, image_loc):
 		new_image = PIL.ImageTk.PhotoImage(PIL.Image.open(image_loc))
 		self.widgets[widget].configure(image=new_image)
 		self.widgets[widget].image = new_image
-
+		
+#Start game
 def init():
 	window = gui(game_title)
 	window.main.mainloop()

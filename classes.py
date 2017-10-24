@@ -5,6 +5,7 @@ import json
 
 """ These are the classes which are the structures for different objects in the game """
 class Actor():
+	#Constructor inits the object with data pulled form DB
 	def __init__(self, data):
 		#self.speech_color = data['CharID']: 1
 		self.fname =  str(data['CharFname']).strip()
@@ -30,6 +31,7 @@ class Actor():
 		self.inv = []
 		self.calc_stats()
 
+	#calculates the currect stats of the actor
 	def calc_stats(self):
 		cur_maxh = self.stats['health']['maxh']
 		cur_curh = self.stats['health']['curh']
@@ -43,22 +45,23 @@ class Stage():
 	def __init__(self, stage_id, name, narration, choices):
 		self.stage_id = stage_id
 		self.name = name
-		self.narration = narration
-		self.choices = choices
-		self.choicesinput = []
+		self.narration = narration #The text to be displayed in this stage (story/dialog)
+		self.choices = choices #The choices availiable at the end of this stage
+		self.choicesinput = [] #List of choices to filter out bad input
 		for choice in choices:
 			self.choicesinput.append(choice.lower())
 
-"""The room class. Rooms will for maps which will be assigned to levels. The rooms will determine the story. """
+"""The location class allows to navigate through the game map and describe locations in the narration """
 
 class Location():
-	def __init__(self, locname, name, image = "", desc = ""):
-		self.id = locname
-		self.locname = locname
-		self.name = name
-		self.image = image
-		self.description = desc
+	#def __init__(self, locname, name, image = "", desc = ""):
+		#self.id = locname
+		#self.locname = locname
+		#self.name = name
+		#self.image = image
+		#self.description = desc
 
+	#Constructor pulls location data from DB
 	def __init__(self, data):
 		self.id =  str(data['LocID']).strip()
 		self.locname = self.id
@@ -67,7 +70,7 @@ class Location():
 		self.description =  str(data['LocID']).strip()
 		self.desc = {'short': str(data['LocDescShort']).strip(), 'long1':  str(data['LocDescLong1']).strip(), 'long2':  str(data['LocDescLong2']).strip()}
 
-
+"""Item class not complete(need to integrate with DB)"""
 class Item():
 	def __init__(self, itemid, name, description):
 		self.itemid = itemid

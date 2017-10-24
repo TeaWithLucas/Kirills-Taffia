@@ -38,12 +38,9 @@ class gui():
 		main.resizable(width = False, height = False)
 		main.title(self.title)
 
-<<<<<<< HEAD
-		font.Font(root=self.main, font="./fonts/AbydosB.ttf", name="Abydos")
+		font.Font(root=self.main, font="./fonts/AbydosR.ttf", name="Abydos")
 
-=======
 		#Loading images from files
->>>>>>> acd5a922775a63fef612578b4a7caa932577ff68
 		bg_image = PIL.ImageTk.PhotoImage(PIL.Image.open("./assets/back.jpg"))
 		map_sprite = PIL.ImageTk.PhotoImage(PIL.Image.open("./assets/map.bmp"))
 		loc_sprite = PIL.ImageTk.PhotoImage(PIL.Image.open("./assets/queens.bmp"))

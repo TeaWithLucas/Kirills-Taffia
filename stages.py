@@ -2,6 +2,7 @@ from classes import *
 
 """The Stage Manager allows to easily change stages, take inputs and display all the outputs"""
 class Stage_Manager():
+	#Inits the stage manager object
 	def __init__(self, gui_obj, all_stages, start_stage, narrator, system_text):
 		self.all_stages = all_stages
 		self.gui_obj = gui_obj
@@ -30,9 +31,9 @@ class Stage_Manager():
 	def update_choices(self):
 		for choice in self.current_stage.choices:
 			print('c = ' + choice)
-			self.gui_obj.add_txt('choice', '[' + choice.upper() + ']    \n\n', self.narrator.tag)
+			self.gui_obj.add_txt('choice', '\n[' + choice.upper() + ']    \n', self.narrator.tag)
 
-
+	#Fetches user input
 	def take_input(self, input):
 		if input == 'exit':
 			quit()
@@ -40,14 +41,17 @@ class Stage_Manager():
 			self.current_stage = self.select_stage(self.current_stage.choices[input])
 			self.get_narration()
 
+	#Select the right stage after input
 	def select_stage(self, text):
 		for stage in self.all_stages:
 			if text == stage.stage_id:
 				return stage
 
+	#Gets the remaining_narration
 	def get_narration(self):
 		self.remaining_narration = self.current_stage.narration
 
+	#Changes the location of the player and displays appropriate narrations
 	def change_location(self, new_location):
 		if self.current_location != new_location:
 			img_loc = './assets/' + new_location.image

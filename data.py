@@ -7,16 +7,19 @@ game_title = 'Kirill Kronicles'
 
 bitcoin_values = [{'name':'bitcoin', 'value':10**8, 'symbol':'₿'}, {'name':'milli', 'value':10**5, 'symbol':'m₿'}, {'name':'micro', 'value':10**2, 'symbol':'µ₿'}, {'name':'nano', 'value':1, 'symbol':'n₿'}]
 
+#Pulls data form a BD table and integrates it into a class
 def table_to_class(table, dic):
-	stringSQL = "SELECT * FROM " + table + ";"
-	tabledata = sql.fetch_all(stringSQL)
-	outputdata = {}
+	stringSQL = "SELECT * FROM " + table + ";" #Create query
+	tabledata = sql.fetch_all(stringSQL) #Fetch data form table
+	outputdata = {} #Create dictionary for output
+	#Put data into class object
 	for row in tabledata:
 		classobj = dic['class'](row)
 		outputdata[classobj.id] = classobj
 		print ("creating: " + classobj.id)
 	return outputdata
 
+#Pulling data from DB
 actors = table_to_class("tblCharacters", {'class' : Actor})
 locations = table_to_class("tblLocations", {'class' : Location})
 
@@ -41,6 +44,7 @@ gun_item = Item('Gun', 'a shiny gun', 'This is a very reliable weapon.')
 #loc_triad = Location('triad', 'Wu\'s Won Now Casino & Noodle Bar', 'triad.bmp', 'Before you is a busy cafe. The barista is strugling to keep up with the work load and looks at you desperately as you walk in.')
 #Stages
 
+#Stages(integrate with DB in future)
 stg_main_menu = Stage('main_menu', 'Main Menu', [{'speaker':actors['Nikeen_Patel'], 'dialog':(draw_ascii('./assets/welcome.txt') + '\n\n\n\n\n' + 'Welcome  Kirill\t'), 'location': locations['menu']}], {'start': 'act1', 'exit':'main_menu'})
 stg_act1 = Stage('act1', 'Act 1', [
 	{'speaker':actors['Nikeen_Patel'], 'dialog':'Lorem ipsum dolor sit amet, sea ei ridens signiferumque, vel no graece altera viderer. Has diam nibh no. Pro in noster probatus eleifend, saepe graecis corpora quo ei. Debitis definitiones quo ad, tollit eirmod patrioque ad vim, dico dolore assentior ut mel. Vel epicurei intellegam ex. Cum probatus theophrastus an, per id tota virtute.', 'location': locations['queens']},

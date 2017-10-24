@@ -5,6 +5,7 @@ from data import *
 import PIL.Image
 import PIL.ImageTk
 import secrets
+from tkinter import font
 
 class gui():
 	#constructor called on creation
@@ -29,6 +30,8 @@ class gui():
 		main.resizable(width = False, height = False)
 		main.title(self.title)
 
+		font.Font(root=self.main, font="./fonts/AbydosB.ttf", name="Abydos")
+
 		bg_image = PIL.ImageTk.PhotoImage(PIL.Image.open("./assets/back.jpg"))
 		map_sprite = PIL.ImageTk.PhotoImage(PIL.Image.open("./assets/map.bmp"))
 		loc_sprite = PIL.ImageTk.PhotoImage(PIL.Image.open("./assets/queens.bmp"))
@@ -50,7 +53,7 @@ class gui():
 		hp_desc_widget = Label(frame_left, text="HP:", bg = 'black', fg = 'White', font = (16), width = 5)
 		hp_widget = Label(frame_left, text='<health>', bg = 'black', fg = 'red', font = (20), width = 15)
 		wallet_desc_widget = Label(frame_left, text="Wallet:", bg = 'black', fg = 'White', font = (16), width = 5)
-		wallet_widget = Label(frame_left, text='<wallet>', bg = 'black', fg = 'red', font = (20), width = 15)
+		wallet_widget = Label(frame_left, text='<wallet>', bg = 'black', fg = 'red', font = ("Abydos", 12), width = 15)
 		inv_desc_widget = Label(frame_left, text="Inventory", bg = 'black', fg = 'White', font = (16), width = 25)
 		inv_widget = Text(frame_left, bg = '#262820',fg = 'white', height = 15, width = 25)
 
